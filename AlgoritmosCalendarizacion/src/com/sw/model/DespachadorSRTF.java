@@ -3,6 +3,7 @@ package com.sw.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +44,56 @@ public class DespachadorSRTF extends Despachador
 
                 break;
             }
+
+    }
+
+    private ArrayList<Notificacion> resolverAlgoritmo(ArrayList<Proceso> procesos)
+    {
+        ArrayList<Notificacion> bloques = new ArrayList<>();
+
+        return bloques;
+    }
+
+    /**
+     * Regresa el proceso con el menor tiempo de llegada en la lista de procesos.
+     *
+     * Si hay dos procesos que tengan el mismo tiempo de llegada, regresará al primero que se haya encontrado en la lista
+     *
+     * y los demás se pondrán en espera.
+     */
+    private Proceso obtenerProcesoMenorTiempoLlegada(ArrayList<Proceso> procesos) throws NullPointerException
+    {
+        ArrayList<Proceso> procesosMenorTiempoLlegada;
+        //Buscamos el proceso con el menor tiempo llegada.
+        Optional<Proceso> procesoMenorTiempoLlegada = procesos.stream().min(Comparator.comparing(Proceso::getTiempoLlegada));
+
+        if (procesoMenorTiempoLlegada.isPresent())
+        {
+            procesosMenorTiempoLlegada = procesos.stream()
+                    .filter(p -> p != procesoMenorTiempoLlegada.get() && p.getTiempoLlegada() == procesoMenorTiempoLlegada.get().tiempoLlegada)
+                    .collect(Collectors.toCollection(ArrayList::new)); // Procedemos a buscar más ocurrencias (si hay más procesos con el mismo tiempo de llegada)
+
+            for (Proceso proceso : procesosMenorTiempoLlegada)
+                proceso.PCB.setEstadoProceso(Estado.ESPERA); // Ponemos a los demás procesos que hayan llegado al mismo tiempo en espera.
+
+            return procesoMenorTiempoLlegada.get();
+
+        } else
+            throw new NullPointerException("La lista está vacía.");
+    }
+
+    /**
+     * Valida si el proceso que acaba de llegar es capaz de interrumpir al proceso que está actualmente en ejecución.
+     *
+     * @param procesoLlegada El proceso que acaba de llegar.
+     * @param procesoActual El proceso que está actualmente en ejecución.
+     *
+     * @return Si el proceso proceso de llegada puede interrumpir al proceso actual.
+     */
+    private boolean interrumpe(long tiempoUsoDelCPU, Proceso procesoLlegada, Proceso procesoActual)
+    {
+        return procesoLlegada.PCB.getEstadoProceso().equals(Estado.LISTO)
+                && procesoLlegada.PCB.tiempoRestanteParaFinalizarProceso() < (tiempoUsoDelCPU + procesoActual.PCB.tiempoRestanteParaFinalizarProceso() - procesoLlegada.getTiempoLlegada());
 
     }
 
@@ -149,13 +200,12 @@ public class DespachadorSRTF extends Despachador
      *
      * @return Si el proceso proceso de llegada puede interrumpir al proceso actual.
      */
-    private boolean interrumpe(long tiempoUsoDelCPU, Proceso procesoLlegada, Proceso procesoActual)
+    /* private boolean interrumpe(long tiempoUsoDelCPU, Proceso procesoLlegada, Proceso procesoActual)
     {
         return procesoLlegada.PCB.getEstadoProceso().equals(Estado.LISTO)
                 && procesoLlegada.PCB.tiempoRestanteParaFinalizarProceso() < (tiempoUsoDelCPU + procesoActual.PCB.tiempoRestanteParaFinalizarProceso() - procesoLlegada.getTiempoLlegada());
 
-    }
-
+    }*/
     private Proceso siguienteProceso(ArrayList<Proceso> procesos, Proceso procesoSiguienteEnCola)
     {
 
