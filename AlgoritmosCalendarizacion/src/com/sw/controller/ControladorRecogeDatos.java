@@ -36,14 +36,14 @@ public class ControladorRecogeDatos implements ActionListener
     public static final int COL_TIEMPO_LLEGADA = 3;
 
     private Object[][] itemsSalvadosTabla;
-    private final TableCellRenderer RENDERER;
+    private final TableCellRenderer TABLE_RENDERER;
 
     public ControladorRecogeDatos(VistaRecogeDatos vistaRecogeDatos, final String CLAVE_ALGORITMO_ACTUAL)
     {
         this.VISTA_RECOGE_DATOS = vistaRecogeDatos;
         this.CLAVE_ALGORITMO_ACTUAL = CLAVE_ALGORITMO_ACTUAL;
         TABLE_MANAGER = new TableManager();
-        RENDERER = new TableCellRenderer();
+        TABLE_RENDERER = new TableCellRenderer();
         initMyComponents();
     }
 
@@ -54,7 +54,7 @@ public class ControladorRecogeDatos implements ActionListener
         VISTA_RECOGE_DATOS.getAleatorio().addActionListener(this);
         VISTA_RECOGE_DATOS.getRegresar().addActionListener(this);
         VISTA_RECOGE_DATOS.getBorrarTodo().addActionListener(this);
-        VISTA_RECOGE_DATOS.getTablaRecogeDatos().setDefaultRenderer(Object.class, RENDERER);
+        VISTA_RECOGE_DATOS.getTablaRecogeDatos().setDefaultRenderer(Object.class, TABLE_RENDERER);
         VISTA_RECOGE_DATOS.getTablaRecogeDatos().setValueAt("P1", 0, 0);
 
         if (CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_RR))
@@ -172,7 +172,7 @@ public class ControladorRecogeDatos implements ActionListener
 
         } catch (NombreNoValidoException ex)
         {
-            RENDERER.anadirPunto(ex.getRow(), ex.getCol());
+            TABLE_RENDERER.anadirPunto(ex.getRow(), ex.getCol());
             repintarTabla();
             if (confirmar(
                     String.format("Error en la fila %s y columna %s", ex.getRow() + 1, ex.getCol() + 1),
@@ -185,7 +185,7 @@ public class ControladorRecogeDatos implements ActionListener
 
         } catch (ValorNoValidoException ex)
         {
-            RENDERER.anadirPunto(ex.getRow(), ex.getCol());
+            TABLE_RENDERER.anadirPunto(ex.getRow(), ex.getCol());
             repintarTabla();
             mostrarError("Error en la entrada de los datos", ex.getMessage(), JOptionPane.ERROR_MESSAGE);
         }
@@ -233,13 +233,13 @@ public class ControladorRecogeDatos implements ActionListener
                 switch (j)
                 {
                     case COL_TIEMPO_RAFAGA:
-                        if (!esEntradaValida(data[i][j].toString(), REGEX_ENTERO_POSITIVO_VALIDO))
+                        if (!esEntradaValida(data[i][j].toString(), REGEX_ENTERO_POSITIVO_VALIDO) || Integer.parseInt(data[i][j].toString()) < 0)
                             throw new ValorNoValidoException(
                                     String.format("El tiempo ráfaga en la fila %s y columna %s no es válido", i + 1, j + 1), i, j);
                         break;
 
                     case COL_TIEMPO_LLEGADA:
-                        if (!esEntradaValida(data[i][j].toString(), REGEX_ENTERO_POSITIVO_VALIDO) && Integer.parseInt(data[i][j].toString()) < 0)
+                        if (!esEntradaValida(data[i][j].toString(), REGEX_ENTERO_POSITIVO_VALIDO) || Integer.parseInt(data[i][j].toString()) < 0)
                             throw new ValorNoValidoException(
                                     String.format("El tiempo de llegada en la fila %s y columna %s no es válido", i + 1, j + 1), i, j);
                         break;
@@ -365,7 +365,7 @@ public class ControladorRecogeDatos implements ActionListener
 
     private void limpiarTabla()
     {
-        RENDERER.borrarTodosPuntos();
+        TABLE_RENDERER.borrarTodosPuntos();
         repintarTabla();
     }
 

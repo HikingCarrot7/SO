@@ -26,9 +26,9 @@ public class VistaSeleccion extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Seleccione un algoritmo");
-        setMaximumSize(new java.awt.Dimension(305, 225));
-        setMinimumSize(new java.awt.Dimension(305, 225));
-        setPreferredSize(new java.awt.Dimension(305, 225));
+        setMaximumSize(new java.awt.Dimension(305, 200));
+        setMinimumSize(new java.awt.Dimension(305, 200));
+        setPreferredSize(new java.awt.Dimension(305, 200));
         setResizable(false);
         getContentPane().setLayout(null);
 
@@ -45,7 +45,7 @@ public class VistaSeleccion extends javax.swing.JFrame
         rr.setMinimumSize(new java.awt.Dimension(280, 50));
         rr.setPreferredSize(new java.awt.Dimension(280, 50));
         getContentPane().add(rr);
-        rr.setBounds(10, 150, 280, 40);
+        rr.setBounds(10, 130, 280, 40);
 
         sjf.setText("Short Job First");
         sjf.setToolTipText("Simular el algoritmo SJF.");
@@ -54,7 +54,7 @@ public class VistaSeleccion extends javax.swing.JFrame
         sjf.setMinimumSize(new java.awt.Dimension(280, 30));
         sjf.setPreferredSize(new java.awt.Dimension(280, 30));
         getContentPane().add(sjf);
-        sjf.setBounds(10, 70, 280, 40);
+        sjf.setBounds(10, 50, 280, 40);
 
         srtf.setText("Short Remainig Time First");
         srtf.setToolTipText("Simular el algoritmo SRTF");
@@ -63,7 +63,7 @@ public class VistaSeleccion extends javax.swing.JFrame
         srtf.setMinimumSize(new java.awt.Dimension(280, 50));
         srtf.setPreferredSize(new java.awt.Dimension(280, 50));
         getContentPane().add(srtf);
-        srtf.setBounds(10, 110, 280, 40);
+        srtf.setBounds(10, 90, 280, 40);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

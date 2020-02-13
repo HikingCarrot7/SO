@@ -29,7 +29,7 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
     private boolean simulacionInterrumpida;
 
     private final String CLAVE_ALGORITMO_ACTUAL;
-    private final TableCellRenderer RENDERER;
+    private final TableCellRenderer TABLE_RENDERER;
 
     public ControladorVistaPrincipal(final VistaPrincipal VISTA_PRINCIPAL, final String CLAVE_ALGORITMO_ACTUAL)
     {
@@ -38,7 +38,7 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
         DIBUJADOR_ESQUEMA = new DibujadorEsquema(VISTA_PRINCIPAL.getEsquema());
         DIBUJADOR_ESQUEMA.setMostrarCambioContexto(CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_SRTF));
         TABLE_MANAGER = new TableManager();
-        RENDERER = new TableCellRenderer();
+        TABLE_RENDERER = new TableCellRenderer();
         initMyComponents();
     }
 
@@ -46,7 +46,7 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
     {
         VISTA_PRINCIPAL.getRegresar().addActionListener(this);
         VISTA_PRINCIPAL.getSimulacion().addActionListener(this);
-        VISTA_PRINCIPAL.getTablaEspera().setDefaultRenderer(Object.class, RENDERER);
+        VISTA_PRINCIPAL.getTablaEspera().setDefaultRenderer(Object.class, TABLE_RENDERER);
         DIBUJADOR_ESQUEMA.crearRenderer();
         VISTA_PRINCIPAL.revalidate();
         VISTA_PRINCIPAL.repaint();
@@ -161,7 +161,7 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
         despachador.reiniciarDespachador();
         calendarizador.reiniciarCalendarizador();
         DIBUJADOR_ESQUEMA.reiniciarEsquema();
-        RENDERER.borrarTodosPuntos();
+        TABLE_RENDERER.borrarTodosPuntos();
         calendarizador = null;
         despachador = null;
 
@@ -256,7 +256,7 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
                     DIBUJADOR_ESQUEMA.marcarUltimoProceso();
                     anadirProcesoTablaFinalizados(proceso, notificacion.getTiempoEnQueFinalizoProceso());
                     anadirProcesoTablaTiempoEspera(proceso, notificacion.getTiempoEsperaProceso());
-                    RENDERER.anadirFila(VISTA_PRINCIPAL.getTablaEspera().getRowCount() - 1);
+                    TABLE_RENDERER.anadirFila(VISTA_PRINCIPAL.getTablaEspera().getRowCount() - 1);
 
                     if (calendarizador.todosProcesosTerminados())
                     {
@@ -267,6 +267,10 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
                     break;
 
                 case Notificacion.CAMBIO_CONTEXTO:
+
+                    if (!proceso.esProcesoTerminado())
+                        anadirProcesoTablaTiempoEspera(proceso, notificacion.getTiempoEsperaProceso());
+
                     DIBUJADOR_ESQUEMA.mostrarEnProcesadorProcesoActual(proceso, notificacion.getTiempoUsoCPU());
                     DIBUJADOR_ESQUEMA.actualizarDiagramaGantt(proceso, notificacion.getTiempoEsperaProceso());
                     break;

@@ -25,7 +25,7 @@ public class DibujadorEsquema
     private final DibujadorProcesador DIBUJADOR_PROCESADOR;
     private final DiagramaGantt DIAGRAMA_GANTT;
     private volatile boolean running;
-    private boolean mostrarCambioContexto;
+    private boolean mostrarInterrupciones;
     private long quantums;
 
     public DibujadorEsquema(Canvas esquema)
@@ -87,11 +87,11 @@ public class DibujadorEsquema
         g.drawString("ha concluido su ejecución", OFFSET_X + 30, INICIAL_Y + SEPARACION * 2);
         g.drawString("en ese intervalo de tiempo", OFFSET_X + 30, INICIAL_Y + SEPARACION * 3);
 
-        if (mostrarCambioContexto)
+        if (mostrarInterrupciones)
         {
             drawTurnedTriangle(g, OFFSET_X + TRIANGLE_LENGTH / 2 + 5, INICIAL_Y + SEPARACION * 5 + 3, TRIANGLE_LENGTH, Color.BLUE);
-            g.drawString("Representa un cambio de", OFFSET_X + 30, INICIAL_Y + SEPARACION * 5);
-            g.drawString("contexto en los procesos", OFFSET_X + 30, INICIAL_Y + SEPARACION * 6);
+            g.drawString("Representa una interrupción", OFFSET_X + 30, INICIAL_Y + SEPARACION * 5);
+            g.drawString("en los procesos", OFFSET_X + 30, INICIAL_Y + SEPARACION * 6);
         }
 
         g.setFont(CURRENT_FONT);
@@ -252,7 +252,7 @@ public class DibujadorEsquema
 
     public void setMostrarCambioContexto(boolean mostrarCambioContexto)
     {
-        this.mostrarCambioContexto = mostrarCambioContexto;
+        this.mostrarInterrupciones = mostrarCambioContexto;
     }
 
     public void setQuantums(long quantums)
