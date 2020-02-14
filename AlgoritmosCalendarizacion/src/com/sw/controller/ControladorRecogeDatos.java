@@ -2,6 +2,7 @@ package com.sw.controller;
 
 import com.sw.exceptions.NombreNoValidoException;
 import com.sw.exceptions.ValorNoValidoException;
+import com.sw.persistence.DAO;
 import com.sw.view.MyTableCellRenderer;
 import com.sw.view.VistaPrincipal;
 import com.sw.view.VistaRecogeDatos;
@@ -59,6 +60,18 @@ public class ControladorRecogeDatos implements ActionListener
 
         if (CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_RR))
             TABLE_MANAGER.eliminarUltimaColumna(VISTA_RECOGE_DATOS.getTablaRecogeDatos());
+
+        DAO dao = new DAO();
+
+        if (dao.existSavedData())
+        {
+            Object[][] data = dao.getSavedData();
+            TABLE_MANAGER.rellenarTabla(VISTA_RECOGE_DATOS.getTablaRecogeDatos(),
+                    CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_RR)
+                    ? TABLE_MANAGER.recortarUltimaColumna(data) : data);
+
+            VISTA_RECOGE_DATOS.getEntradaNProcesos().setValue(data.length);
+        }
     }
 
     public void establecerDatosDefecto(JTable tabla, final String CLAVE_ALGORITMO_ACTUAL)
@@ -92,6 +105,7 @@ public class ControladorRecogeDatos implements ActionListener
 
             case "continuar":
                 if (todosDatosValidos())
+                {
                     EventQueue.invokeLater(() ->
                     {
                         VistaPrincipal vistaPrincipal = new VistaPrincipal();
@@ -120,18 +134,32 @@ public class ControladorRecogeDatos implements ActionListener
 
                         VISTA_RECOGE_DATOS.dispose();
                     });
+
+                    saveTableData();
+                }
                 break;
 
             case "regresar":
-                if (confirmar("Confirmar acción", "Todos los datos insertados actualmente serán eliminados, ¿Continuar?"))
-                    EventQueue.invokeLater(() ->
-                    {
-                        VistaSeleccion vistaSeleccion = new VistaSeleccion();
-                        vistaSeleccion.setVisible(true);
-                        vistaSeleccion.setLocationRelativeTo(null);
-                        new ControladorSeleccion(vistaSeleccion);
-                        VISTA_RECOGE_DATOS.dispose();
-                    });
+
+                switch (mostrarMensaje("Confirmar", "¿Desea conservar los datos actuales?"))
+                {
+                    case 0:
+                        saveTableData();
+                        break;
+                    case 1:
+                        new DAO().removeAllSavedData();
+                        break;
+                }
+
+                EventQueue.invokeLater(() ->
+                {
+                    VistaSeleccion vistaSeleccion = new VistaSeleccion();
+                    vistaSeleccion.setVisible(true);
+                    vistaSeleccion.setLocationRelativeTo(null);
+                    new ControladorSeleccion(vistaSeleccion);
+                    VISTA_RECOGE_DATOS.dispose();
+                });
+
                 break;
 
             case "aleatorios":
@@ -293,11 +321,11 @@ public class ControladorRecogeDatos implements ActionListener
 
     private void generarValoresTiempoAleatorios()
     {
-        final int MIN_VALUE_RAFAGA = 2;
-        final int MAX_VALUE_RAFAGA = 100;
+        final int MIN_VALUE_RAFAGA = 20;
+        final int MAX_VALUE_RAFAGA = 10000;
 
         final int MIN_VALUE_LLEGADA = 1;
-        final int MAX_VALUE_LLEGADA = 10;
+        final int MAX_VALUE_LLEGADA = 1000;
 
         SecureRandom rand = new SecureRandom();
         JTable table = VISTA_RECOGE_DATOS.getTablaRecogeDatos();
@@ -355,7 +383,12 @@ public class ControladorRecogeDatos implements ActionListener
 
     private boolean confirmar(String titulo, String text)
     {
-        return JOptionPane.showConfirmDialog(VISTA_RECOGE_DATOS, text, titulo, JOptionPane.YES_NO_OPTION) == 0;
+        return mostrarMensaje(titulo, text) == 0;
+    }
+
+    private int mostrarMensaje(String titulo, String text)
+    {
+        return JOptionPane.showConfirmDialog(VISTA_RECOGE_DATOS, text, titulo, JOptionPane.YES_NO_OPTION);
     }
 
     private boolean esEntradaValida(String text, String regex)
@@ -372,6 +405,11 @@ public class ControladorRecogeDatos implements ActionListener
     private void repintarTabla()
     {
         VISTA_RECOGE_DATOS.getTablaRecogeDatos().updateUI();
+    }
+
+    private void saveTableData()
+    {
+        new DAO().saveData(TABLE_MANAGER.obtenerDatosTabla(VISTA_RECOGE_DATOS.getTablaRecogeDatos()));
     }
 
     private class TableCellRenderer extends MyTableCellRenderer

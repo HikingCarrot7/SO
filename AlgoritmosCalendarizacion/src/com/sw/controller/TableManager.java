@@ -88,6 +88,16 @@ public class TableManager
 
     }
 
+    public Object[][] recortarUltimaColumna(Object[][] data)
+    {
+        Object[][] newData = new Object[data.length][data[0].length - 1];
+
+        for (int i = 0; i < newData.length; i++)
+            System.arraycopy(data[i], 0, newData[i], 0, newData[i].length);
+
+        return newData;
+    }
+
     public int obtenerNFilasTabla(JTable table)
     {
         return table.getRowCount();
