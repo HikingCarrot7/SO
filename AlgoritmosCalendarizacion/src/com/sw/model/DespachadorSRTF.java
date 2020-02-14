@@ -34,7 +34,7 @@ public class DespachadorSRTF extends Despachador
                 {
                     notificar(notif);
 
-                    if (notif.getIdentificador() != Notificacion.INTERRUPCION)
+                    if (cpu != null && notif.getIdentificador() != Notificacion.INTERRUPCION)
                     {
                         cpu.ejecutarProceso(notif.getProceso(), notif.getTiempoUsoCPU());
                         esperar();
@@ -248,6 +248,12 @@ public class DespachadorSRTF extends Despachador
                 .min(Comparator.comparing(p -> p.PCB.tiempoRestanteParaFinalizarProceso()));
     }
 
+    /**
+     * Regresa el proceso siguiente después de la terminación del proceso actual.
+     *
+     * @param procesos La lista de procesos restantes a ser despachados.
+     * @return El proceso siguiente a ser despachado.
+     */
     private Proceso procesoSiguienteAlFinalizarElActual(ArrayList<Proceso> procesos)
     {
         Optional<Proceso> procesoSiguiente = obtenerProcesoEnEsperaConMenorTiempoFinalizar(procesos);

@@ -41,6 +41,7 @@ public class DibujadorEsquema
         running = true;
         new Renderer(this);
         ESQUEMA.createBufferStrategy(2);
+        ESQUEMA.setFont(new Font("Arial", Font.PLAIN, 12));
     }
 
     public void destroyRenderer()

@@ -73,8 +73,12 @@ public class DiagramaGantt
         }
 
         if (TIEMPO_ESPERA_PROCESOS.size() >= MAX_PROCESOS)
+        {
             for (int i = 0; i < MAX_PROCESOS_COL; i++)
                 TIEMPO_ESPERA_PROCESOS.remove(0);
+
+            subirNivelMarcasInterrupciones();
+        }
     }
 
     private void dibujarTiempoEsperaPromedio(Graphics2D g, int y)
@@ -151,12 +155,23 @@ public class DiagramaGantt
 
     private void subirNivelMarcasInterrupciones()
     {
+        int size = INTERRUPCIONES.size();
 
+        for (int i = 0; i < size; i++)
+        {
+            Point p = INTERRUPCIONES.get(0);
+
+            if (obtenerNivelMarcaInterrupcion(p) == 1)
+                INTERRUPCIONES.remove(p);
+
+            else
+                p.y -= (PROCESO_RECT_HEIGHT + SEPARACION_POR_LINEA);
+        }
     }
 
-    private int obtenerNivelMarcarInterrupcion()
+    private int obtenerNivelMarcaInterrupcion(Point p)
     {
-        return 0;
+        return p.y / OFFSET_Y;
     }
 
     public ArrayList<Proceso> getProcesosDibujados()
