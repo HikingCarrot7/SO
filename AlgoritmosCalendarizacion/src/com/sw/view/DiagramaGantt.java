@@ -149,6 +149,16 @@ public class DiagramaGantt
         INTERRUPCIONES.add(new Point(x, y));
     }
 
+    private void subirNivelMarcasInterrupciones()
+    {
+
+    }
+
+    private int obtenerNivelMarcarInterrupcion()
+    {
+        return 0;
+    }
+
     public ArrayList<Proceso> getProcesosDibujados()
     {
         return TIEMPO_ESPERA_PROCESOS;
