@@ -96,7 +96,7 @@ public class DespachadorSRTF extends Despachador
                 procesos.remove(procesoActual); // Sacamos al proceso que acaba de terminar de la lista.
 
                 analizarProcesosEntrantesAlFinalizarUnProceso(procesos, tiempoTotalUsoDelCPU); // Se ponen en espera a todos los procesos que llegan justo cuando acaba de terminar el proceso actual.
-                Proceso procesoSig = obtenerProcesoMenorTiempoParaFinalizar(procesos).get();
+                Proceso procesoSig = procesoSiguienteAlFinalizarElActual(procesos);
                 procesoActual = procesoSig;
                 procesos.remove(procesoSig);
             }
@@ -229,7 +229,7 @@ public class DespachadorSRTF extends Despachador
     {
         Optional<Proceso> proceso = obtenerProcesoMenorTiempoParaFinalizar(obtenerProcesosQueLleganEn(procesoQueInterrumpio.getTiempoLlegada(), procesos));
         ponerEnEspera(proceso.get());
-        Proceso p = obtenerProcesoEnEsperaConMenorTiempoFinalizar(procesos);
+        Proceso p = obtenerProcesoEnEsperaConMenorTiempoFinalizar(procesos).get();
         p.PCB.setEstadoProceso(Estado.EJECUCION);
         return p;
     }
@@ -241,12 +241,22 @@ public class DespachadorSRTF extends Despachador
      *
      * @return El proceso en espera con el menor tiempo ráfaga.
      */
-    private Proceso obtenerProcesoEnEsperaConMenorTiempoFinalizar(ArrayList<Proceso> procesos)
+    private Optional<Proceso> obtenerProcesoEnEsperaConMenorTiempoFinalizar(ArrayList<Proceso> procesos)
     {
         return procesos.stream()
                 .filter(p -> p.PCB.getEstadoProceso().equals(Estado.ESPERA))
-                .min(Comparator.comparing(p -> p.PCB.tiempoRestanteParaFinalizarProceso()))
-                .get();
+                .min(Comparator.comparing(p -> p.PCB.tiempoRestanteParaFinalizarProceso()));
+    }
+
+    private Proceso procesoSiguienteAlFinalizarElActual(ArrayList<Proceso> procesos)
+    {
+        Optional<Proceso> procesoSiguiente = obtenerProcesoEnEsperaConMenorTiempoFinalizar(procesos);
+
+        if (procesoSiguiente.isPresent())
+            return procesoSiguiente.get();
+
+        else
+            return obtenerProcesoMenorTiempoLlegada(procesos);
     }
 
     /**
