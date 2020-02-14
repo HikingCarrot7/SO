@@ -155,23 +155,32 @@ public class DiagramaGantt
 
     private void subirNivelMarcasInterrupciones()
     {
-        int size = INTERRUPCIONES.size();
+        ArrayList<Point> interrupcionesAEliminar = new ArrayList<>();
 
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < INTERRUPCIONES.size(); i++)
         {
-            Point p = INTERRUPCIONES.get(0);
+            Point point = INTERRUPCIONES.get(i);
 
-            if (obtenerNivelMarcaInterrupcion(p) == 1)
-                INTERRUPCIONES.remove(p);
-
-            else
-                p.y -= (PROCESO_RECT_HEIGHT + SEPARACION_POR_LINEA);
+            if (obtenerNivelMarcaInterrupcion(point) == 4)
+                interrupcionesAEliminar.add(point);
         }
+
+        System.out.println(interrupcionesAEliminar.size());
+
+        for (int i = 0; i < interrupcionesAEliminar.size(); i++)
+            INTERRUPCIONES.remove(interrupcionesAEliminar.get(i));
+
+        for (int i = 0; i < INTERRUPCIONES.size(); i++)
+        {
+            Point p = INTERRUPCIONES.get(i);
+            p.y -= (PROCESO_RECT_HEIGHT + SEPARACION_POR_LINEA);
+        }
+
     }
 
     private int obtenerNivelMarcaInterrupcion(Point p)
     {
-        return p.y / OFFSET_Y;
+        return p.y / (PROCESO_RECT_HEIGHT + SEPARACION_POR_LINEA);
     }
 
     public void limpiarInterrupciones()
