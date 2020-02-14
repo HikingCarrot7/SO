@@ -1,4 +1,4 @@
-package com.sw.view;
+package com.sw.controller;
 
 import java.awt.Component;
 import java.awt.Point;

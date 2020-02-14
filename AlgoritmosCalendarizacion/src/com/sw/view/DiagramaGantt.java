@@ -174,6 +174,11 @@ public class DiagramaGantt
         return p.y / OFFSET_Y;
     }
 
+    public void limpiarInterrupciones()
+    {
+        INTERRUPCIONES.clear();
+    }
+
     public ArrayList<Proceso> getProcesosDibujados()
     {
         return TIEMPO_ESPERA_PROCESOS;

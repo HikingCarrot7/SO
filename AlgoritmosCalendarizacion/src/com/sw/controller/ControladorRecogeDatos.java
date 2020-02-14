@@ -3,7 +3,6 @@ package com.sw.controller;
 import com.sw.exceptions.NombreNoValidoException;
 import com.sw.exceptions.ValorNoValidoException;
 import com.sw.persistence.DAO;
-import com.sw.view.MyTableCellRenderer;
 import com.sw.view.VistaPrincipal;
 import com.sw.view.VistaRecogeDatos;
 import com.sw.view.VistaSeleccion;
