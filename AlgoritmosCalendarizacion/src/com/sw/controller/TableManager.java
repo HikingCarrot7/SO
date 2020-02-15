@@ -88,6 +88,16 @@ public class TableManager
 
     }
 
+    public Object[] getLastColumn(JTable table)
+    {
+        Object[] lastColumn = new Object[table.getRowCount()];
+
+        for (int i = 0; i < lastColumn.length; i++)
+            lastColumn[i] = table.getModel().getValueAt(i, table.getColumnCount() - 1);
+
+        return lastColumn;
+    }
+
     public Object[][] recortarUltimaColumna(Object[][] data)
     {
         Object[][] newData = new Object[data.length][data[0].length - 1];

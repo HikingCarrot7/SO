@@ -2,8 +2,6 @@ package com.sw.controller;
 
 import com.sw.model.*;
 import com.sw.view.*;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,7 +27,6 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
     private boolean simulacionInterrumpida;
 
     private final String CLAVE_ALGORITMO_ACTUAL;
-    private final TableCellRenderer TABLE_RENDERER;
 
     public ControladorVistaPrincipal(final VistaPrincipal VISTA_PRINCIPAL, final String CLAVE_ALGORITMO_ACTUAL)
     {
@@ -38,7 +35,6 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
         DIBUJADOR_ESQUEMA = new DibujadorEsquema(VISTA_PRINCIPAL.getEsquema());
         DIBUJADOR_ESQUEMA.setMostrarCambioContexto(CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_SRTF));
         TABLE_MANAGER = new TableManager();
-        TABLE_RENDERER = new TableCellRenderer();
         initMyComponents();
     }
 
@@ -46,7 +42,6 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
     {
         VISTA_PRINCIPAL.getRegresar().addActionListener(this);
         VISTA_PRINCIPAL.getSimulacion().addActionListener(this);
-        VISTA_PRINCIPAL.getTablaEspera().setDefaultRenderer(Object.class, TABLE_RENDERER);
         DIBUJADOR_ESQUEMA.crearRenderer();
         VISTA_PRINCIPAL.revalidate();
         VISTA_PRINCIPAL.repaint();
@@ -161,7 +156,6 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
         despachador.reiniciarDespachador();
         calendarizador.reiniciarCalendarizador();
         DIBUJADOR_ESQUEMA.reiniciarEsquema();
-        TABLE_RENDERER.borrarTodosPuntos();
         calendarizador = null;
         despachador = null;
 
@@ -243,6 +237,17 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
         });
     }
 
+    private void actualizarPromedio()
+    {
+        Object[] tiemposEspera = TABLE_MANAGER.getLastColumn(VISTA_PRINCIPAL.getTablaEspera());
+        double esperaTotal = 0;
+
+        for (Object tiempoEspera : tiemposEspera)
+            esperaTotal += Long.parseLong(String.valueOf(tiempoEspera));
+
+        DIBUJADOR_ESQUEMA.actualizarPromedioTiemposEspera(esperaTotal / tiemposEspera.length);
+    }
+
     @Override
     public void update(Observable o, Object arg)
     {
@@ -255,8 +260,8 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
                 case Notificacion.PROCESO_HA_FINALIZADO:
                     DIBUJADOR_ESQUEMA.marcarUltimoProceso();
                     anadirProcesoTablaFinalizados(proceso, notificacion.getTiempoEnQueFinalizoProceso());
-                    anadirProcesoTablaTiempoEspera(proceso, notificacion.getTiempoEsperaProceso());
-                    TABLE_RENDERER.anadirFila(VISTA_PRINCIPAL.getTablaEspera().getRowCount() - 1);
+                    anadirProcesoTablaTiempoEspera(proceso, notificacion.getMomento());
+                    actualizarPromedio();
 
                     if (calendarizador.todosProcesosTerminados())
                     {
@@ -268,15 +273,12 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
 
                 case Notificacion.CAMBIO_CONTEXTO:
 
-                    if (!proceso.esProcesoTerminado())
-                        anadirProcesoTablaTiempoEspera(proceso, notificacion.getTiempoEsperaProceso());
-
                     DIBUJADOR_ESQUEMA.mostrarEnProcesadorProcesoActual(proceso, notificacion.getTiempoUsoCPU());
-                    DIBUJADOR_ESQUEMA.actualizarDiagramaGantt(proceso, notificacion.getTiempoEsperaProceso());
+                    DIBUJADOR_ESQUEMA.actualizarDiagramaGantt(proceso, notificacion.getTiempoUsoCPU(), notificacion.getMomento());
                     break;
 
                 case Notificacion.PROCESO_DEJO_CPU:
-                    anadirProcesoTablaTiempoEspera(proceso, notificacion.getTiempoEsperaProceso());
+
                     break;
 
                 case Notificacion.INTERRUPCION:
@@ -292,20 +294,6 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
     private boolean confirmar(String titulo, String text)
     {
         return JOptionPane.showConfirmDialog(VISTA_PRINCIPAL, text, titulo, JOptionPane.YES_NO_OPTION) == 0;
-    }
-
-    private class TableCellRenderer extends MyTableCellRenderer
-    {
-
-        @Override
-        public synchronized Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-        {
-            boolean existeFila = existeFila(row);
-            setBackground(existeFila ? Color.red : Color.white);
-            setForeground(existeFila ? Color.white : Color.black);
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        }
-
     }
 
 }

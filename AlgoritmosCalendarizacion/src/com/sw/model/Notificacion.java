@@ -16,7 +16,7 @@ public class Notificacion
     private int identificador;
     private Proceso proceso;
     private long tiempoEnQueFinalizoProceso;
-    private long tiempoEsperaProceso;
+    private long momento;
     private long tiempoUsoCPU;
 
     public Notificacion(int identificador)
@@ -24,17 +24,17 @@ public class Notificacion
         this.identificador = identificador;
     }
 
-    public Notificacion(int identificador, Proceso proceso, long tiempoUsoCPU, long tiempoEsperaProceso)
+    public Notificacion(int identificador, Proceso proceso, long tiempoUsoCPU, long momento)
     {
         this.identificador = identificador;
         this.proceso = proceso;
-        this.tiempoEsperaProceso = tiempoEsperaProceso;
+        this.momento = momento;
         this.tiempoUsoCPU = tiempoUsoCPU;
     }
 
-    public Notificacion(int identificador, Proceso proceso, long tiempoUsoCPU, long tiempoEsperaProceso, long tiempoEnQueFinalizoProceso)
+    public Notificacion(int identificador, Proceso proceso, long tiempoUsoCPU, long momento, long tiempoEnQueFinalizoProceso)
     {
-        this(identificador, proceso, tiempoUsoCPU, tiempoEsperaProceso);
+        this(identificador, proceso, tiempoUsoCPU, momento);
         this.tiempoEnQueFinalizoProceso = tiempoEnQueFinalizoProceso;
     }
 
@@ -73,14 +73,14 @@ public class Notificacion
         this.tiempoEnQueFinalizoProceso = tiempoEnQueFinalizoProceso;
     }
 
-    public long getTiempoEsperaProceso()
+    public long getMomento()
     {
-        return tiempoEsperaProceso;
+        return momento;
     }
 
-    public void setTiempoEsperaProceso(long tiempoEsperaProceso)
+    public void setMomento(long momento)
     {
-        this.tiempoEsperaProceso = tiempoEsperaProceso;
+        this.momento = momento;
     }
 
     public long getTiempoUsoCPU()
@@ -96,7 +96,7 @@ public class Notificacion
     @Override
     public String toString()
     {
-        return "Notificacion{" + "identificador=" + identificador + ", proceso=" + proceso.getIdentificador() + ", tiempoUsoCPU=" + tiempoUsoCPU + ", tiempoEspera=" + tiempoEsperaProceso + '}';
+        return "Notificacion{" + "identificador=" + identificador + ", proceso=" + proceso.getIdentificador() + ", tiempoUsoCPU=" + tiempoUsoCPU + ", tiempoEspera=" + momento + '}';
     }
 
 }

@@ -31,7 +31,6 @@ public class DiagramaGantt
     private final ArrayList<Point> INTERRUPCIONES;
 
     private double promedioTiempoEspera;
-    private int nProcesos;
 
     public DiagramaGantt(DibujadorEsquema dibujadorEsquema)
     {
@@ -40,19 +39,18 @@ public class DiagramaGantt
         INTERRUPCIONES = new ArrayList<>();
     }
 
-    public void anadirProcesoAlDiagramaGantt(Proceso proceso, long tiempoEspera)
+    public void anadirProcesoAlDiagramaGantt(Proceso proceso, long tiempoUsoDelCPU, long momento)
     {
-        proceso.PCB.setTiempoEjecutado(tiempoEspera);
+        proceso.PCB.setTiempoEjecutado(tiempoUsoDelCPU);
+        proceso.PCB.setTiempoRafaga(momento);
         TIEMPO_ESPERA_PROCESOS.add(proceso);
-        promedioTiempoEspera += tiempoEspera;
-        nProcesos++;
     }
 
     public void dibujarTiemposEsperaProcesos(Graphics2D g)
     {
         int y = OFFSET_Y;
 
-        g.drawString("Diagrama de Gantt", OFFSET_X, OFFSET_Y - 5);
+        g.drawString("Diagrama de Gantt", OFFSET_X, OFFSET_Y - 15);
         dibujarInterrupciones(g);
 
         for (int i = 0, x = OFFSET_X; i < TIEMPO_ESPERA_PROCESOS.size(); i++, x += PROCESO_RECT_WIDTH)
@@ -84,7 +82,7 @@ public class DiagramaGantt
     private void dibujarTiempoEsperaPromedio(Graphics2D g, int y)
     {
         DIBUJADOR_ESQUEMA.dibujarTextoCentradoRect(g,
-                "Espera promedio: " + String.format("%,.2f", ((double) (promedioTiempoEspera / nProcesos))),
+                "Espera promedio: " + String.format("%,.2f", (promedioTiempoEspera)),
                 y,
                 DibujadorProcesador.CPU);
     }
@@ -93,12 +91,25 @@ public class DiagramaGantt
     {
         if (proceso != null && proceso.esProcesoTerminado())
         {
-            g.setColor(Color.RED);
+            g.setColor(new Color(250, 145, 120));
             g.fillRect(x, y, PROCESO_RECT_WIDTH, PROCESO_RECT_HEIGHT);
             g.setColor(Color.BLACK);
         }
 
         g.drawRect(x, y, PROCESO_RECT_WIDTH, PROCESO_RECT_HEIGHT);
+        dibujarIntervalo(g, proceso, x, y);
+    }
+
+    private void dibujarIntervalo(Graphics2D g, Proceso proceso, int x, int y)
+    {
+        final Font CURRENT_FONT = g.getFont();
+        final Font TIME_FONT = new Font(CURRENT_FONT.getFontName(), CURRENT_FONT.getStyle(), CURRENT_FONT.getSize() - 3);
+
+        g.setFont(TIME_FONT);
+        g.setColor(Color.MAGENTA);
+        DIBUJADOR_ESQUEMA.dibujarStringPunto(g, String.valueOf(proceso.PCB.getTiempoEjecutado()), x + PROCESO_RECT_WIDTH / 2, y - 11);
+        g.setColor(Color.BLACK);
+        g.setFont(CURRENT_FONT);
     }
 
     private void dibujarInterrupciones(Graphics2D g)
@@ -123,7 +134,7 @@ public class DiagramaGantt
         if (proceso != null)
         {
             g.setFont(TIME_FONT);
-            DIBUJADOR_ESQUEMA.dibujarStringPunto(g, String.valueOf(proceso.PCB.getTiempoEjecutado()), x, y + PROCESO_RECT_HEIGHT + LINE_LENGTH);
+            DIBUJADOR_ESQUEMA.dibujarStringPunto(g, String.valueOf(proceso.PCB.getTiempoRafaga()), x, y + PROCESO_RECT_HEIGHT + LINE_LENGTH);
             g.setFont(CURRENT_FONT);
             DIBUJADOR_ESQUEMA.dibujarStringPunto(g, proceso.getIdentificador(), x + PROCESO_RECT_WIDTH / 2, y + 3);
         }
@@ -196,11 +207,6 @@ public class DiagramaGantt
     public void setPromedioTiempoEspera(double promedioTiempoEspera)
     {
         this.promedioTiempoEspera = promedioTiempoEspera;
-    }
-
-    public void setnProcesos(int nProcesos)
-    {
-        this.nProcesos = nProcesos;
     }
 
 }
