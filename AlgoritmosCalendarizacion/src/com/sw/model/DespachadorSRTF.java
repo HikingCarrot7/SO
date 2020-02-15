@@ -2,6 +2,8 @@ package com.sw.model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,7 @@ public class DespachadorSRTF extends Despachador
         while (running)
             if (todosProcesosEntregados)
             {
-                ArrayList<Notificacion> notificaciones = obtenerBloquesASimular(procesos.stream()
+                /*ArrayList<Notificacion> notificaciones = obtenerBloquesASimular(procesos.stream()
                         .sorted(Comparator.comparing(Proceso::getTiempoLlegada).thenComparing(p -> p.PCB.getNumProceso()))
                         .collect(Collectors.toCollection(ArrayList::new)));
 
@@ -39,10 +41,192 @@ public class DespachadorSRTF extends Despachador
                         cpu.ejecutarProceso(notif.getProceso(), notif.getTiempoUsoCPU());
                         esperar();
                     }
-                }
+                }*/
+
+                SRTF bloques = new SRTF(procesos.stream()
+                        .sorted(Comparator.comparing(Proceso::getTiempoLlegada))
+                        .collect(Collectors.toCollection(ArrayList::new)));
+
+                bloques.srtf().entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).forEach(System.out::println);
+
+                for (Proceso proceso : procesos)
+                    System.out.println("El proceso " + proceso.getIdentificador() + " espero " + bloques.getTiemposEspera()[proceso.PCB.getNumProceso()]);
 
                 break;
             }
+
+    }
+
+    private ArrayList<Notificacion> obtenerBloques(ArrayList<Proceso> procesos)
+    {
+        ArrayList<Proceso> p = procesos;
+        ArrayList<Proceso> listaEspera = new ArrayList<>();
+        HashMap<Integer, ArrayList<Proceso>> entradas = new HashMap<>();
+        Proceso procesoActual;
+        int[] tiemposEspera = new int[procesos.size()];
+        int nProcesos = 0;
+        long tiempoTotal = 0;
+
+        for (Proceso proceso : p)
+        {
+            tiempoTotal += proceso.PCB.getTiempoRafaga();
+            nProcesos++;
+
+        }
+
+        return null;
+    }
+
+    private class SRTF
+    {
+
+        private ArrayList<Proceso> procesos;
+        private ArrayList<Proceso> listaEspera;
+        private HashMap<Long, ArrayList<Proceso>> mapOrderedByEntry;
+        private Proceso procesoActual;
+        private int[] tiemposEspera;
+        private int nProcesos;
+        private long tiempoTotal;
+
+        public SRTF(ArrayList<Proceso> procesos)
+        {
+            this.procesos = procesos;
+            listaEspera = new ArrayList<>();
+            mapOrderedByEntry = new HashMap<>();
+            tiemposEspera = new int[procesos.size()];
+            initMapOrderedByEntry();
+        }
+
+        private void initMapOrderedByEntry()
+        {
+            for (Proceso proceso : procesos)
+            {
+                tiempoTotal += proceso.PCB.getTiempoRafaga();
+                nProcesos++;
+
+                if (mapOrderedByEntry.containsKey(proceso.getTiempoLlegada()))
+                {
+                    if (!mapOrderedByEntry.get(proceso.getTiempoLlegada()).contains(proceso))
+                        mapOrderedByEntry.get(proceso.getTiempoLlegada()).add(proceso);
+
+                } else
+                {
+                    mapOrderedByEntry.put(proceso.getTiempoLlegada(), new ArrayList<>());
+                    mapOrderedByEntry.get(proceso.getTiempoLlegada()).add(proceso);
+                }
+
+            }
+
+        }
+
+        private HashMap<Long, HashMap<String, String>> srtf()
+        {
+            HashMap<Long, HashMap<String, String>> gantt = new HashMap<>();
+
+            for (long i = 0; i < tiempoTotal; i++)
+            {
+
+                if (mapOrderedByEntry.containsKey(i))
+                {
+                    listaEspera.addAll(mapOrderedByEntry.get(i));
+                    Proceso shortest = listaEspera.get(0);
+
+                    for (int j = 1; j < listaEspera.size(); j++)
+                        if (tiempoRestanteProceso(shortest, i) > tiempoRestanteProceso(listaEspera.get(j), i))
+                            shortest = listaEspera.get(j);
+
+                    if (i == 0)
+                    {
+                        eliminarListaEspera(shortest);
+                        procesoActual = shortest;
+                        gantt.put(i, new HashMap<>());
+                        gantt.get(i).put("Proceso", procesoActual.getIdentificador());
+                        gantt.get(i).put("Rafaga restante", String.valueOf(tiempoRestanteProceso(procesoActual, i)));
+
+                    } else if (tiempoRestanteProceso(procesoActual, i) == 0)
+                    {
+                        eliminarListaEspera(shortest);
+                        procesoActual = shortest;
+                        gantt.put(i, new HashMap<>());
+                        gantt.get(i).put("Proceso", procesoActual.getIdentificador());
+                        gantt.get(i).put("Rafaga restante", String.valueOf(tiempoRestanteProceso(procesoActual, i)));
+
+                    } else if (tiempoRestanteProceso(shortest, i) < tiempoRestanteProceso(procesoActual, i))
+                    {
+                        eliminarListaEspera(shortest);
+                        listaEspera.add(procesoActual);
+                        procesoActual = shortest;
+                        gantt.put(i, new HashMap<>());
+                        gantt.get(i).put("Proceso", procesoActual.getIdentificador());
+                        gantt.get(i).put("Rafaga restante", String.valueOf(tiempoRestanteProceso(procesoActual, i)));
+
+                    } else
+                    {
+                        if (!listaEspera.contains(shortest))
+                            listaEspera.add(shortest);
+
+                        gantt.put(i, new HashMap<>());
+                        gantt.get(i).put("Proceso", procesoActual.getIdentificador());
+                        gantt.get(i).put("Rafaga restante", String.valueOf(tiempoRestanteProceso(procesoActual, i)));
+                    }
+
+                } else if (tiempoRestanteProceso(procesoActual, i) != 0)
+                {
+                    /*gantt.put(i, new HashMap<>());
+                    gantt.get(i).put("Proceso", procesoActual.getIdentificador());
+                    gantt.get(i).put("Rafaga restante", String.valueOf(tiempoRestanteProceso(procesoActual, i)));*/
+
+                } else
+                {
+                    Proceso shortest = listaEspera.get(0);
+
+                    for (int j = 1; j < listaEspera.size(); j++)
+                    {
+                        Proceso proceso = listaEspera.get(j);
+
+                        if (tiempoRestanteProceso(shortest, i) > tiempoRestanteProceso(proceso, i))
+                            shortest = proceso;
+
+                        else if (tiempoRestanteProceso(shortest, i) == tiempoRestanteProceso(proceso, i))
+                            if (shortest.getTiempoLlegada() > proceso.getTiempoLlegada())
+                                shortest = proceso;
+
+                    }
+
+                    gantt.put(i, new HashMap<>());
+                    gantt.get(i).put("Proceso", shortest.getIdentificador());
+                    gantt.get(i).put("Rafaga restante", String.valueOf(tiempoRestanteProceso(shortest, i)));
+
+                    eliminarListaEspera(shortest);
+                    procesoActual = shortest;
+                }
+
+                for (Proceso proceso : listaEspera)
+                    tiemposEspera[proceso.PCB.getNumProceso()]++;
+            }
+
+            return gantt;
+        }
+
+        private void eliminarListaEspera(Proceso proceso)
+        {
+            listaEspera.remove(proceso);
+        }
+
+        private long tiempoRestanteProceso(Proceso proceso, long tiempoUsoDelCPU)
+        {
+            return proceso.PCB.getTiempoRafaga() - (tiempoUsoDelCPU - proceso.getTiempoLlegada() - tiempoEsperaProceso(proceso));
+        }
+
+        private long tiempoEsperaProceso(Proceso proceso)
+        {
+            return tiemposEspera[proceso.PCB.getNumProceso()];
+        }
+
+        public int[] getTiemposEspera()
+        {
+            return tiemposEspera;
+        }
 
     }
 
