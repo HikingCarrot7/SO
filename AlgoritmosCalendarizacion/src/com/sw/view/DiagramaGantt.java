@@ -29,9 +29,7 @@ public class DiagramaGantt
     private final DibujadorEsquema DIBUJADOR_ESQUEMA;
     private final ArrayList<Proceso> TIEMPO_ESPERA_PROCESOS;
     private final ArrayList<Point> INTERRUPCIONES;
-
     private double promedioTiempoEspera;
-    private boolean idle;
 
     public DiagramaGantt(DibujadorEsquema dibujadorEsquema)
     {

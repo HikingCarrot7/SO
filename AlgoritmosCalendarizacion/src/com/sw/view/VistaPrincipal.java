@@ -38,7 +38,6 @@ public class VistaPrincipal extends javax.swing.JFrame
         procesosFinalizadosLabel = new javax.swing.JLabel();
         tiemposEsperaLabel = new javax.swing.JLabel();
         title = new javax.swing.JLabel();
-        nota = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 600));
@@ -234,14 +233,6 @@ public class VistaPrincipal extends javax.swing.JFrame
         getContentPane().add(title);
         title.setBounds(335, 5, 390, 25);
 
-        nota.setFont(new java.awt.Font("Consolas", 0, 9)); // NOI18N
-        nota.setText("Nota: Los números en el diagrama de Gantt representan el tiempo de espera (en milisegundos) de cada proceso.");
-        nota.setMaximumSize(new java.awt.Dimension(550, 10));
-        nota.setMinimumSize(new java.awt.Dimension(550, 10));
-        nota.setPreferredSize(new java.awt.Dimension(550, 10));
-        getContentPane().add(nota);
-        nota.setBounds(240, 560, 550, 10);
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -288,7 +279,6 @@ public class VistaPrincipal extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel datosRecuperadosLabel;
     private java.awt.Canvas esquema;
-    private javax.swing.JLabel nota;
     private javax.swing.JScrollPane panelEspera;
     private javax.swing.JScrollPane panelResumen;
     private javax.swing.JLabel procesosFinalizadosLabel;

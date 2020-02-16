@@ -320,11 +320,11 @@ public class ControladorRecogeDatos implements ActionListener
 
     private void generarValoresTiempoAleatorios()
     {
-        final int MIN_VALUE_RAFAGA = 20;
-        final int MAX_VALUE_RAFAGA = 100;
+        final int MIN_VALUE_RAFAGA = 1;
+        final int MAX_VALUE_RAFAGA = 3;
 
-        final int MIN_VALUE_LLEGADA = 1;
-        final int MAX_VALUE_LLEGADA = 1000;
+        final int MIN_VALUE_LLEGADA = 500;
+        final int MAX_VALUE_LLEGADA = 900;
 
         SecureRandom rand = new SecureRandom();
         JTable table = VISTA_RECOGE_DATOS.getTablaRecogeDatos();
