@@ -291,6 +291,14 @@ public class DespachadorSRTF extends Despachador
                     .filter(p -> p.PCB.getEstadoProceso().equals(Estado.LISTO))
                     .min(Comparator.comparing(Proceso::getTiempoLlegada));
 
+            if (proceso.isPresent())
+                procesos.entrySet()
+                        .stream()
+                        .map(Entry::getValue)
+                        .flatMap(Collection::stream)
+                        .filter(p -> p != proceso.get() && p.PCB.getEstadoProceso().equals(Estado.LISTO) && p.getTiempoLlegada() == proceso.get().getTiempoLlegada())
+                        .forEach(this::anadirListaEspera);
+
             return proceso.isPresent() ? procesos.entrySet()
                     .stream()
                     .map(Entry::getValue)
