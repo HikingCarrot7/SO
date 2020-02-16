@@ -1,5 +1,10 @@
 package com.sw.model;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author HikingCarrot7
@@ -19,52 +24,208 @@ public class DespachadorRR extends Despachador
     public void run()
     {
         while (running)
-            if (hayProcesosEsperando())
+            if (todosProcesosEntregados)
             {
-                Proceso proceso = procesos.remove();
-                long tiempoUsoCPU = obtenerTiempoUsoCPU(proceso);
-                cambiarContexto(proceso, tiempoUsoCPU);
+                RR rr = new RR();
+                ArrayList<Notificacion> notificaciones = rr.rr(procesos.stream().collect(Collectors.toCollection(ArrayList::new)));
 
-                esperar(); // Esperamos al proceso.
-
-                if (!running)
-                    break;
-
-                revisarEstadoProceso(proceso);
-
-                if (proceso.esProcesoTerminado())
-                    notificar(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO,
-                            proceso,
-                            0, // Tiempo de uso del cpu en su última ejecución. (El proceso ha finalizado, ya no necesita usar el cpu)
-                            tiempoEsperaProceso(proceso), // Tiempo que esperó el cpu para su última ejecución.
-                            tiempoTotalUsoCPU + tiempoUsoCPU)); // Tiempo en el que el proceso ha terminado de ejecutarse.
-                else
+                for (Notificacion notif : notificaciones)
                 {
-                    notificar(new Notificacion(Notificacion.PROCESO_DEJO_CPU, proceso,
-                            0, // Tiempo de uso del cpu en su última ejecución. (El proceso ha dejado el cpu)
-                            tiempoEsperaProceso(proceso)));// Tiempo que esperó el proceso para su última ejecución.
+                    notificar(notif);
 
-                    procesos.addLast(proceso);//El proceso no ha terminado, regresa a la cola.
+                    if (cpu != null)
+                    {
+                        cpu.ejecutarProceso(notif.getProceso(), notif.getTiempoUsoCPU());
+                        esperar();
+                    }
                 }
 
-                tiempoTotalUsoCPU += tiempoUsoCPU; // Tiempo total que se ha usado el cpu.
+                todosProcesosEntregados = false;
+                break;
             }
 
     }
 
-    private long obtenerTiempoUsoCPU(Proceso proceso)
+    private class RR
     {
-        return tiempoRestanteProceso(proceso) >= QUANTUM ? QUANTUM : tiempoRestanteProceso(proceso);
-    }
 
-    private void revisarEstadoProceso(Proceso proceso)
-    {
-        proceso.PCB.setEstadoProceso(tiempoRestanteProceso(proceso) <= 0 ? Estado.TERMINADO : Estado.ESPERA);
-    }
+        private int[] tiemposEspera;
+        private ArrayList<Proceso> listaEspera;
+        private long tiempoTotal;
 
-    private long tiempoRestanteProceso(Proceso proceso)
-    {
-        return proceso.PCB.getTiempoRafaga() - proceso.PCB.getTiempoEjecutado();
+        public RR()
+        {
+            listaEspera = new ArrayList<>();
+        }
+
+        private ArrayList<Notificacion> rr(ArrayList<Proceso> procesos)
+        {
+            tiemposEspera = new int[procesos.size()];
+            ArrayList<Notificacion> notificaciones = new ArrayList<>();
+            listaEspera.addAll(obtenerProcesosEnElMomento(procesos, obtenerMenorTiempoLlegada(procesos)));
+            procesos.removeAll(listaEspera);
+            tiempoTotal += listaEspera.get(0).getTiempoLlegada();
+
+            while (!listaEspera.isEmpty())
+            {
+                Proceso procesoActual = listaEspera.remove(0);
+                ponerEnEjecucion(procesoActual);
+
+                /**
+                 * Buscamos a todos los procesos que puedan llegar durante la ejecución del proceso actual para ponerlos a la espera.
+                 */
+                for (Iterator<Proceso> proceso = procesos.iterator(); proceso.hasNext();)
+                {
+                    Proceso sig = proceso.next();
+
+                    if (puedeLlegar(procesoActual, sig, tiempoTotal)) // Si el proceso puede llegar durante la ejecución del proceso actual.
+                    {
+                        ponerEnEspera(sig); // Lo añadimos a la lista de espera.
+                        proceso.remove(); // Lo sacamos de la lista de procesos.
+                    }
+
+                }
+
+                long tiempoUsoDelCPU = obtenerTiempoUsoCPU(procesoActual); // Tiempo que el proceso actual uso el CPU.
+                procesoActual.PCB.aumentarTiempoEjecutado(tiempoUsoDelCPU); // Aumentamos el tiempo de ejecución del proceso actual.
+                revisarEstadoProceso(procesoActual); // Si el proceso actual ya terminó o se va a esperar.
+
+                notificaciones.add(new Notificacion(Notificacion.CAMBIO_CONTEXTO, procesoActual.obtenerCopiaProceso(), tiempoUsoDelCPU, tiempoTotal)); // Notificamos a la vista del cambio en el diagrama.
+
+                if (procesoActual.esProcesoTerminado())
+                {
+                    terminarProceso(procesoActual); // Terminamos el proceso.
+                    notificaciones.add(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO, procesoActual.obtenerCopiaProceso(), 0, -1, tiempoUsoDelCPU + tiempoTotal)); // Notificamos el proceso ya terminó.
+
+                    /**
+                     * Obtemos a todos los procesos que hayan llegado justo cuando el proceso actual terminó.
+                     */
+                    ponerEnEspera(obtenerProcesosEnElMomento(procesos, tiempoTotal + tiempoUsoDelCPU));
+                    procesos.removeAll(listaEspera);
+
+                } else
+                    ponerEnEspera(procesoActual); // Ponemos en espera al proceso actual.
+
+                /**
+                 * Si la lista de espera está vacía pero aún hay más procesos que no han llegado.
+                 */
+                if (listaEspera.isEmpty() && !procesos.isEmpty())
+                {
+                    ponerEnEspera(obtenerProcesosEnElMomento(procesos, procesos.get(0).getTiempoLlegada()));
+                    procesos.removeAll(listaEspera);
+                    Proceso procesoSig = listaEspera.get(0);
+                    notificaciones.add(new Notificacion(Notificacion.IDLE, procesoSig, procesoSig.getTiempoLlegada() - (tiempoTotal + tiempoUsoDelCPU), tiempoTotal + tiempoUsoDelCPU));
+                    tiempoTotal = procesoSig.getTiempoLlegada();
+
+                } else
+                    tiempoTotal += tiempoUsoDelCPU;
+            }
+
+            return notificaciones;
+        }
+
+        /**
+         * Retorna o todos los procesos que llegan en el momento especificado.
+         *
+         * @param procesos Los procesos a filtrar.
+         * @param momento El momento específico.
+         *
+         * @return La lista de procesos que llegan en el momento establecido.
+         */
+        private ArrayList<Proceso> obtenerProcesosEnElMomento(ArrayList<Proceso> procesos, long momento)
+        {
+            return procesos.stream()
+                    .filter(p -> !p.PCB.getEstadoProceso().equals(Estado.ESPERA) && p.getTiempoLlegada() == momento)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+
+        /**
+         * Valida si cualquier proceso es capaz de llegar durante la ejecución del proceso actual.
+         *
+         * @param procesoActual El proceso actual.
+         * @param cualquierProceso Cualquier proceso.
+         * @param tiempoUsoDelCPU El tiempo de uso del CPU.
+         *
+         * @return Si cualquier proceso es capaz de llegar durante la ejecución del proceso actual.
+         */
+        private boolean puedeLlegar(Proceso procesoActual, Proceso cualquierProceso, long tiempoUsoDelCPU)
+        {
+            return cualquierProceso.PCB.getEstadoProceso().equals(Estado.LISTO)
+                    && cualquierProceso.getTiempoLlegada() >= tiempoUsoDelCPU
+                    && cualquierProceso.getTiempoLlegada() <= tiempoUsoDelCPU + obtenerTiempoUsoCPU(procesoActual);
+        }
+
+        /**
+         * Regresa el menor tiempo de llegada de todos los procesos.
+         *
+         * @param procesos La lista de procesos en donde se buscará.
+         *
+         * @return El menor tiempo de llegada de los procesos.
+         */
+        private long obtenerMenorTiempoLlegada(ArrayList<Proceso> procesos)
+        {
+            return procesos.stream()
+                    .map(Proceso::getTiempoLlegada)
+                    .min(Comparator.comparing(Long::longValue))
+                    .get();
+        }
+
+        /**
+         * Pone en la lista de espera a los procesos especificados.
+         *
+         * @param procesos Los procesos a poner en la lista de espera.
+         */
+        private void ponerEnEspera(ArrayList<Proceso> procesos)
+        {
+            for (int i = 0; i < procesos.size(); i++)
+            {
+                Proceso proceso = procesos.get(i);
+                ponerEnEspera(proceso);
+            }
+        }
+
+        /**
+         * Pone en espera al proceso especificado.
+         *
+         * @param proceso El proceso a poner en espera.
+         */
+        private void ponerEnEspera(Proceso proceso)
+        {
+            proceso.PCB.setEstadoProceso(Estado.ESPERA);
+            listaEspera.add(proceso);
+        }
+
+        private void terminarProceso(Proceso proceso)
+        {
+            proceso.PCB.setEstadoProceso(Estado.TERMINADO);
+            listaEspera.remove(proceso);
+        }
+
+        private void ponerEnEjecucion(Proceso proceso)
+        {
+            proceso.PCB.setEstadoProceso(Estado.EJECUCION);
+        }
+
+        private long obtenerTiempoUsoCPU(Proceso proceso)
+        {
+            return tiempoRestanteProceso(proceso) >= QUANTUM ? QUANTUM : tiempoRestanteProceso(proceso);
+        }
+
+        /**
+         * Revisa si el proceso ya ha terminado o aún tiene que esperar.
+         *
+         * @param proceso El proceso para revisar.
+         */
+        private void revisarEstadoProceso(Proceso proceso)
+        {
+            proceso.PCB.setEstadoProceso(tiempoRestanteProceso(proceso) <= 0 ? Estado.TERMINADO : Estado.ESPERA);
+        }
+
+        private long tiempoRestanteProceso(Proceso proceso)
+        {
+            return proceso.PCB.getTiempoRafaga() - proceso.PCB.getTiempoEjecutado();
+        }
+
     }
 
 }

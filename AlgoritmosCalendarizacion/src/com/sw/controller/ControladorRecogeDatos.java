@@ -57,18 +57,12 @@ public class ControladorRecogeDatos implements ActionListener
         VISTA_RECOGE_DATOS.getTablaRecogeDatos().setDefaultRenderer(Object.class, TABLE_RENDERER);
         VISTA_RECOGE_DATOS.getTablaRecogeDatos().setValueAt("P1", 0, 0);
 
-        if (CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_RR))
-            TABLE_MANAGER.eliminarUltimaColumna(VISTA_RECOGE_DATOS.getTablaRecogeDatos());
-
         DAO dao = new DAO();
 
         if (dao.existSavedData())
         {
             Object[][] data = dao.getSavedData();
-            TABLE_MANAGER.rellenarTabla(VISTA_RECOGE_DATOS.getTablaRecogeDatos(),
-                    CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_RR)
-                    ? TABLE_MANAGER.recortarUltimaColumna(data) : data);
-
+            TABLE_MANAGER.rellenarTabla(VISTA_RECOGE_DATOS.getTablaRecogeDatos(), data);
             VISTA_RECOGE_DATOS.getEntradaNProcesos().setValue(data.length);
         }
     }
@@ -320,11 +314,11 @@ public class ControladorRecogeDatos implements ActionListener
 
     private void generarValoresTiempoAleatorios()
     {
-        final int MIN_VALUE_RAFAGA = 20;
-        final int MAX_VALUE_RAFAGA = 100;
+        final int MIN_VALUE_RAFAGA = 100;
+        final int MAX_VALUE_RAFAGA = 3000;
 
-        final int MIN_VALUE_LLEGADA = 1;
-        final int MAX_VALUE_LLEGADA = 1000;
+        final int MIN_VALUE_LLEGADA = 500;
+        final int MAX_VALUE_LLEGADA = 900;
 
         SecureRandom rand = new SecureRandom();
         JTable table = VISTA_RECOGE_DATOS.getTablaRecogeDatos();
@@ -335,11 +329,8 @@ public class ControladorRecogeDatos implements ActionListener
             int number = rand.nextInt(MAX_VALUE_RAFAGA - MIN_VALUE_RAFAGA) + MIN_VALUE_RAFAGA;
             row[COL_TIEMPO_RAFAGA] = number;
 
-            if (!CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_RR))
-            {
-                number = rand.nextInt(MAX_VALUE_LLEGADA - MIN_VALUE_LLEGADA) + MIN_VALUE_LLEGADA;
-                row[COL_TIEMPO_LLEGADA] = number;
-            }
+            number = rand.nextInt(MAX_VALUE_LLEGADA - MIN_VALUE_LLEGADA) + MIN_VALUE_LLEGADA;
+            row[COL_TIEMPO_LLEGADA] = number;
         }
 
         TABLE_MANAGER.rellenarTabla(table, data);

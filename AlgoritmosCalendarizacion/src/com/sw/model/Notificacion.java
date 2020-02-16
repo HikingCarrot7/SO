@@ -97,7 +97,7 @@ public class Notificacion
     @Override
     public String toString()
     {
-        return "Notificacion{" + "identificador=" + identificador + ", proceso=" + proceso.getIdentificador() + ", tiempoUsoCPU=" + tiempoUsoCPU + ", tiempoEspera=" + momento + '}';
+        return "Notificacion{" + "identificador=" + identificador + ", proceso=" + proceso.getIdentificador() + ", tiempoUsoCPU=" + tiempoUsoCPU + ", momento=" + momento + '}';
     }
 
 }

@@ -100,7 +100,7 @@ public class DibujadorEsquema
 
     private void dibujarQuantums(Graphics2D g)
     {
-        dibujarTextoCentradoRect(g, "Quantums : " + quantums, DibujadorProcesador.CPU_HEIGHT - 30, DibujadorProcesador.CPU);
+        dibujarTextoCentradoRect(g, "Quantum: " + quantums, DibujadorProcesador.CPU_HEIGHT - 30, DibujadorProcesador.CPU);
     }
 
     public void mostrarEnProcesadorProcesoActual(Proceso proceso, long tiempoUsoCpu)

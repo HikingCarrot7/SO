@@ -16,7 +16,6 @@ public class Calendarizador implements Runnable, Observer
     private ArrayList<Proceso> procesosAEntregar;
     private ArrayList<Proceso> procesosTerminados;
     private Despachador despachador;
-    private boolean entregaSinRetraso;
 
     public Calendarizador(ArrayList<Proceso> procesosAEntregar, Despachador despachador)
     {
@@ -26,12 +25,6 @@ public class Calendarizador implements Runnable, Observer
         despachador.addObserver(this);
         ordenarProcesosTiempoLlegada();
         entregarProcesosADespachador();
-    }
-
-    public Calendarizador(ArrayList<Proceso> procesosAEntregar, Despachador despachador, boolean entregaSinRetraso)
-    {
-        this(procesosAEntregar, despachador);
-        this.entregaSinRetraso = entregaSinRetraso;
     }
 
     private void ordenarProcesosTiempoLlegada()
@@ -54,24 +47,10 @@ public class Calendarizador implements Runnable, Observer
         for (int i = 0; i < procesosAEntregar.size(); i++)
         {
             Proceso proceso = procesosAEntregar.get(i);
-
-            try
-            {
-                if (!entregaSinRetraso)
-                    Thread.sleep(proceso.getTiempoLlegada());
-
-                despachador.aceptarProceso(proceso);
-
-            } catch (InterruptedException ex)
-            {
-                System.out.println(ex.getMessage());
-            }
-
+            despachador.aceptarProceso(proceso);
         }
 
-        if (despachador instanceof DespachadorSRTF)
-            ((DespachadorSRTF) despachador).todosProcesosEntregados();
-
+        despachador.todosProcesosEntragados();
     }
 
     @Override

@@ -29,9 +29,7 @@ public class DiagramaGantt
     private final DibujadorEsquema DIBUJADOR_ESQUEMA;
     private final ArrayList<Proceso> TIEMPO_ESPERA_PROCESOS;
     private final ArrayList<Point> INTERRUPCIONES;
-
     private double promedioTiempoEspera;
-    private boolean idle;
 
     public DiagramaGantt(DibujadorEsquema dibujadorEsquema)
     {
@@ -190,8 +188,6 @@ public class DiagramaGantt
             if (obtenerNivelMarcaInterrupcion(point) == 4)
                 interrupcionesAEliminar.add(point);
         }
-
-        System.out.println(interrupcionesAEliminar.size());
 
         for (int i = 0; i < interrupcionesAEliminar.size(); i++)
             INTERRUPCIONES.remove(interrupcionesAEliminar.get(i));
