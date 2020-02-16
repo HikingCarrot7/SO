@@ -29,8 +29,6 @@ public class DespachadorRR extends Despachador
                 RR rr = new RR();
                 ArrayList<Notificacion> notificaciones = rr.rr(procesos.stream().collect(Collectors.toCollection(ArrayList::new)));
 
-                // notificaciones.forEach(System.out::println);
-                //System.out.println(notificaciones.size());
                 for (Notificacion notif : notificaciones)
                 {
                     notificar(notif);
@@ -46,7 +44,6 @@ public class DespachadorRR extends Despachador
                 break;
             }
 
-        System.out.println("Hola");
     }
 
     private class RR

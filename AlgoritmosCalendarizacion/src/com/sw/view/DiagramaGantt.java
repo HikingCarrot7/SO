@@ -189,8 +189,6 @@ public class DiagramaGantt
                 interrupcionesAEliminar.add(point);
         }
 
-        System.out.println(interrupcionesAEliminar.size());
-
         for (int i = 0; i < interrupcionesAEliminar.size(); i++)
             INTERRUPCIONES.remove(interrupcionesAEliminar.get(i));
 
