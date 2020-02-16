@@ -55,7 +55,6 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
 
     public void establecerDatosDefecto(JTable table, final long QUANTUMS)
     {
-        TABLE_MANAGER.eliminarUltimaColumna(VISTA_PRINCIPAL.getTablaResumen());
         TABLE_MANAGER.copiarTablas(table, VISTA_PRINCIPAL.getTablaResumen());
         VISTA_PRINCIPAL.setTitle("Simulando el algoritmo Round Robin");
         DIBUJADOR_ESQUEMA.setQuantums(QUANTUMS);
@@ -147,7 +146,7 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
         }
 
         despachador.addObserver(this);
-        calendarizador = new Calendarizador(procesos, despachador, CLAVE_ALGORITMO_ACTUAL.equals(ControladorSeleccion.CLAVE_ALGORITMO_SRTF));
+        calendarizador = new Calendarizador(procesos, despachador);
         simulacionInterrumpida = false;
     }
 
@@ -215,7 +214,8 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
                     Estado.NUEVO,
                     data[i][ControladorRecogeDatos.COL_NOMBRE_PROCESO].toString(),
                     i,
-                    Long.parseLong(data[i][ControladorRecogeDatos.COL_TIEMPO_RAFAGA].toString())));
+                    Long.parseLong(data[i][ControladorRecogeDatos.COL_TIEMPO_RAFAGA].toString()),
+                    Long.parseLong(data[i][ControladorRecogeDatos.COL_TIEMPO_LLEGADA].toString())));
 
         return procesos;
     }
@@ -246,6 +246,7 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
             esperaTotal += Long.parseLong(String.valueOf(tiempoEspera));
 
         DIBUJADOR_ESQUEMA.actualizarPromedioTiemposEspera(esperaTotal / tiemposEspera.length);
+        System.out.println(VISTA_PRINCIPAL.getTablaEspera().getRowCount());
     }
 
     @Override

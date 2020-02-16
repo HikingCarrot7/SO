@@ -7,9 +7,9 @@ package com.sw.model;
 public class ProcesoRR extends Proceso
 {
 
-    public ProcesoRR(Estado estadoProceso, String identificador, int numProceso, long tiempoRafaga)
+    public ProcesoRR(Estado estadoProceso, String identificador, int numProceso, long tiempoRafaga, long tiempoLlegada)
     {
-        super(estadoProceso, identificador, 0, numProceso, tiempoRafaga);
+        super(estadoProceso, identificador, tiempoLlegada, numProceso, tiempoRafaga);
     }
 
     @Override
@@ -19,7 +19,8 @@ public class ProcesoRR extends Proceso
                 PCB.getEstadoProceso(),
                 identificador,
                 PCB.getNumProceso(),
-                PCB.getTiempoRafaga());
+                PCB.getTiempoRafaga(),
+                tiempoLlegada);
 
         copiaProceso.setTiempoLlegada(tiempoLlegada);
         copiaProceso.PCB.setTiempoEjecutado(PCB.getTiempoEjecutado());

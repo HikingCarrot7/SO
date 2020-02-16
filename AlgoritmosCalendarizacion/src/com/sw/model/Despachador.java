@@ -14,6 +14,7 @@ public abstract class Despachador extends Observable implements Runnable
     protected volatile ArrayDeque<Proceso> procesos;
     protected long tiempoTotalUsoCPU; // Es el tiempo (en ms) que ha pasado desde que se ejecutó el primer proceso en el cpu.
     protected volatile boolean running;
+    protected boolean todosProcesosEntregados;
 
     public Despachador(final CPU CPU)
     {
@@ -83,6 +84,11 @@ public abstract class Despachador extends Observable implements Runnable
         cpu = null;
         tiempoTotalUsoCPU = 0;
         procesos.clear();
+    }
+
+    protected void todosProcesosEntragados()
+    {
+        todosProcesosEntregados = true;
     }
 
 }

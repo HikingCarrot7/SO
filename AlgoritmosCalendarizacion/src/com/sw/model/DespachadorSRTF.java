@@ -161,9 +161,6 @@ public class DespachadorSRTF extends Despachador
                 }
             }
 
-            Proceso procesoMayorTiempoLlegada = procesoMayorTiempoLlegada(procesos);
-            //tiempoTotal += procesoMayorTiempoLlegada.PCB.getTiempoRafaga() + procesoMayorTiempoLlegada.getTiempoLlegada();
-
         }
 
         private HashMap<Long, HashMap<String, Object>> srtf()
@@ -172,8 +169,6 @@ public class DespachadorSRTF extends Despachador
 
             for (long tiempoTranscurrido = 0; tiempoTranscurrido < tiempoTotal; tiempoTranscurrido++)
             {
-                System.out.println(tiempoTranscurrido);
-
                 if (mapOrderedByEntry.containsKey(tiempoTranscurrido))
                 {
                     anadirListaEspera(mapOrderedByEntry.get(tiempoTranscurrido)); // Se añaden todos los procesos que hayan llegado ahora a la lista de espera.
