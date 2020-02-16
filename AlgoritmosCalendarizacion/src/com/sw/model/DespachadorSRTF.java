@@ -43,6 +43,7 @@ public class DespachadorSRTF extends Despachador
                     }
                 }
 
+                todosProcesosEntregados = false;
                 break;
             }
 

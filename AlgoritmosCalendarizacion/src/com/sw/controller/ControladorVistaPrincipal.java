@@ -90,7 +90,10 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
                     }
 
                     if (despachador != null)
+                    {
                         despachador.detenerDespachador();
+                        despachador.reiniciarDespachador();
+                    }
 
                     DIBUJADOR_ESQUEMA.destroyRenderer();
                     VISTA_PRINCIPAL.dispose();
@@ -246,7 +249,6 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
             esperaTotal += Long.parseLong(String.valueOf(tiempoEspera));
 
         DIBUJADOR_ESQUEMA.actualizarPromedioTiemposEspera(esperaTotal / tiemposEspera.length);
-        System.out.println(VISTA_PRINCIPAL.getTablaEspera().getRowCount());
     }
 
     @Override

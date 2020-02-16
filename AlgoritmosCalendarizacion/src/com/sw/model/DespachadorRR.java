@@ -30,6 +30,7 @@ public class DespachadorRR extends Despachador
                 ArrayList<Notificacion> notificaciones = rr.rr(procesos.stream().collect(Collectors.toCollection(ArrayList::new)));
 
                 // notificaciones.forEach(System.out::println);
+                //System.out.println(notificaciones.size());
                 for (Notificacion notif : notificaciones)
                 {
                     notificar(notif);
@@ -39,11 +40,13 @@ public class DespachadorRR extends Despachador
                         cpu.ejecutarProceso(notif.getProceso(), notif.getTiempoUsoCPU());
                         esperar();
                     }
-
                 }
+
+                todosProcesosEntregados = false;
                 break;
             }
 
+        System.out.println("Hola");
     }
 
     private class RR
@@ -80,7 +83,7 @@ public class DespachadorRR extends Despachador
 
                     if (puedeLlegar(procesoActual, sig, tiempoTotal)) // Si el proceso puede llegar durante la ejecución del proceso actual.
                     {
-                        listaEspera.add(sig); // Lo añadimos a la lista de espera.
+                        ponerEnEspera(sig); // Lo añadimos a la lista de espera.
                         proceso.remove(); // Lo sacamos de la lista de procesos.
                     }
 
@@ -98,9 +101,9 @@ public class DespachadorRR extends Despachador
                     notificaciones.add(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO, procesoActual.obtenerCopiaProceso(), 0, -1, tiempoUsoDelCPU + tiempoTotal)); // Notificamos el proceso ya terminó.
 
                     /**
-                     * Obtemos a todos los procesos que hayan llegado justo cuando el proceso actual terminó para ponerlos en espera.
+                     * Obtemos a todos los procesos que hayan llegado justo cuando el proceso actual terminó.
                      */
-                    listaEspera.addAll(obtenerProcesosEnElMomento(procesos, tiempoTotal));
+                    ponerEnEspera(obtenerProcesosEnElMomento(procesos, tiempoTotal + tiempoUsoDelCPU));
                     procesos.removeAll(listaEspera);
 
                 } else
@@ -111,7 +114,7 @@ public class DespachadorRR extends Despachador
                  */
                 if (listaEspera.isEmpty() && !procesos.isEmpty())
                 {
-                    listaEspera.addAll(obtenerProcesosEnElMomento(procesos, procesos.get(0).getTiempoLlegada()));
+                    ponerEnEspera(obtenerProcesosEnElMomento(procesos, procesos.get(0).getTiempoLlegada()));
                     procesos.removeAll(listaEspera);
                     Proceso procesoSig = listaEspera.get(0);
                     notificaciones.add(new Notificacion(Notificacion.IDLE, procesoSig, procesoSig.getTiempoLlegada() - (tiempoTotal + tiempoUsoDelCPU), tiempoTotal + tiempoUsoDelCPU));
@@ -119,7 +122,6 @@ public class DespachadorRR extends Despachador
 
                 } else
                     tiempoTotal += tiempoUsoDelCPU;
-
             }
 
             return notificaciones;
@@ -136,7 +138,7 @@ public class DespachadorRR extends Despachador
         private ArrayList<Proceso> obtenerProcesosEnElMomento(ArrayList<Proceso> procesos, long momento)
         {
             return procesos.stream()
-                    .filter(p -> p.getTiempoLlegada() == momento)
+                    .filter(p -> !p.PCB.getEstadoProceso().equals(Estado.ESPERA) && p.getTiempoLlegada() == momento)
                     .collect(Collectors.toCollection(ArrayList::new));
         }
 
@@ -152,8 +154,8 @@ public class DespachadorRR extends Despachador
         private boolean puedeLlegar(Proceso procesoActual, Proceso cualquierProceso, long tiempoUsoDelCPU)
         {
             return cualquierProceso.PCB.getEstadoProceso().equals(Estado.LISTO)
-                    && cualquierProceso.getTiempoLlegada() > tiempoUsoDelCPU
-                    && cualquierProceso.getTiempoLlegada() < tiempoUsoDelCPU + obtenerTiempoUsoCPU(procesoActual);
+                    && cualquierProceso.getTiempoLlegada() >= tiempoUsoDelCPU
+                    && cualquierProceso.getTiempoLlegada() <= tiempoUsoDelCPU + obtenerTiempoUsoCPU(procesoActual);
         }
 
         /**
@@ -178,7 +180,11 @@ public class DespachadorRR extends Despachador
          */
         private void ponerEnEspera(ArrayList<Proceso> procesos)
         {
-            procesos.forEach(this::ponerEnEspera);
+            for (int i = 0; i < procesos.size(); i++)
+            {
+                Proceso proceso = procesos.get(i);
+                ponerEnEspera(proceso);
+            }
         }
 
         /**
