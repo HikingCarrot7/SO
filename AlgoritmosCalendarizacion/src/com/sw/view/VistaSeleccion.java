@@ -1,5 +1,6 @@
 package com.sw.view;
 
+import java.awt.Font;
 import javax.swing.JButton;
 
 /**
@@ -21,7 +22,7 @@ public class VistaSeleccion extends javax.swing.JFrame
 
         titile = new javax.swing.JLabel();
         rr = new javax.swing.JButton();
-        sjf = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         srtf = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -32,12 +33,14 @@ public class VistaSeleccion extends javax.swing.JFrame
         setResizable(false);
         getContentPane().setLayout(null);
 
-        titile.setFont(new java.awt.Font("Consolas", 0, 18)); // NOI18N
+        titile.setBackground(new java.awt.Color(255, 255, 255));
+        titile.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 24));
         titile.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titile.setText("Algoritmo a simular");
         getContentPane().add(titile);
-        titile.setBounds(10, 5, 280, 20);
+        titile.setBounds(10, 5, 280, 40);
 
+        rr.setBackground(new java.awt.Color(255, 255, 255));
         rr.setText("Round Robin");
         rr.setToolTipText("Simular el algoritmo RR.");
         rr.setActionCommand("rr");
@@ -45,25 +48,23 @@ public class VistaSeleccion extends javax.swing.JFrame
         rr.setMinimumSize(new java.awt.Dimension(280, 50));
         rr.setPreferredSize(new java.awt.Dimension(280, 50));
         getContentPane().add(rr);
-        rr.setBounds(10, 130, 280, 40);
+        rr.setBounds(10, 110, 280, 50);
 
-        sjf.setText("Short Job First");
-        sjf.setToolTipText("Simular el algoritmo SJF.");
-        sjf.setActionCommand("sjf");
-        sjf.setMaximumSize(new java.awt.Dimension(280, 30));
-        sjf.setMinimumSize(new java.awt.Dimension(280, 30));
-        sjf.setPreferredSize(new java.awt.Dimension(280, 30));
-        getContentPane().add(sjf);
-        sjf.setBounds(10, 50, 280, 40);
+        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
+        jPanel1.setLayout(null);
 
+        srtf.setBackground(new java.awt.Color(255, 255, 255));
         srtf.setText("Short Remainig Time First");
         srtf.setToolTipText("Simular el algoritmo SRTF");
         srtf.setActionCommand("srtf");
         srtf.setMaximumSize(new java.awt.Dimension(280, 50));
         srtf.setMinimumSize(new java.awt.Dimension(280, 50));
         srtf.setPreferredSize(new java.awt.Dimension(280, 50));
-        getContentPane().add(srtf);
-        srtf.setBounds(10, 90, 280, 40);
+        jPanel1.add(srtf);
+        srtf.setBounds(10, 50, 280, 50);
+
+        getContentPane().add(jPanel1);
+        jPanel1.setBounds(0, 0, 310, 190);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -73,19 +74,14 @@ public class VistaSeleccion extends javax.swing.JFrame
         return rr;
     }
 
-    public JButton getSjf()
-    {
-        return sjf;
-    }
-
     public JButton getSrtf()
     {
         return srtf;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton rr;
-    private javax.swing.JButton sjf;
     private javax.swing.JButton srtf;
     private javax.swing.JLabel titile;
     // End of variables declaration//GEN-END:variables

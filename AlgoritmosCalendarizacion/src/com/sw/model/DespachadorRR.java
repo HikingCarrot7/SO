@@ -29,8 +29,7 @@ public class DespachadorRR extends Despachador
                 RR rr = new RR();
                 ArrayList<Notificacion> notificaciones = rr.rr(procesos.stream().collect(Collectors.toCollection(ArrayList::new)));
 
-                notificaciones.forEach(System.out::println);
-
+                // notificaciones.forEach(System.out::println);
                 for (Notificacion notif : notificaciones)
                 {
                     notificar(notif);
@@ -72,33 +71,40 @@ public class DespachadorRR extends Despachador
                 Proceso procesoActual = listaEspera.remove(0);
                 ponerEnEjecucion(procesoActual);
 
+                /**
+                 * Buscamos a todos los procesos que puedan llegar durante la ejecución del proceso actual para ponerlos a la espera.
+                 */
                 for (Iterator<Proceso> proceso = procesos.iterator(); proceso.hasNext();)
                 {
                     Proceso sig = proceso.next();
 
-                    if (puedeLlegar(procesoActual, sig, tiempoTotal))
+                    if (puedeLlegar(procesoActual, sig, tiempoTotal)) // Si el proceso puede llegar durante la ejecución del proceso actual.
                     {
-                        listaEspera.add(sig);
-                        proceso.remove();
+                        listaEspera.add(sig); // Lo añadimos a la lista de espera.
+                        proceso.remove(); // Lo sacamos de la lista de procesos.
                     }
 
                 }
 
-                long tiempoUsoDelCPU = obtenerTiempoUsoCPU(procesoActual);
-                procesoActual.PCB.aumentarTiempoEjecutado(tiempoUsoDelCPU);
-                revisarEstadoProceso(procesoActual);
+                long tiempoUsoDelCPU = obtenerTiempoUsoCPU(procesoActual); // Tiempo que el proceso actual uso el CPU.
+                procesoActual.PCB.aumentarTiempoEjecutado(tiempoUsoDelCPU); // Aumentamos el tiempo de ejecución del proceso actual.
+                revisarEstadoProceso(procesoActual); // Si el proceso actual ya terminó o se va a esperar.
 
-                notificaciones.add(new Notificacion(Notificacion.CAMBIO_CONTEXTO, procesoActual.obtenerCopiaProceso(), tiempoUsoDelCPU, tiempoTotal));
+                notificaciones.add(new Notificacion(Notificacion.CAMBIO_CONTEXTO, procesoActual.obtenerCopiaProceso(), tiempoUsoDelCPU, tiempoTotal)); // Notificamos a la vista del cambio en el diagrama.
 
                 if (procesoActual.esProcesoTerminado())
                 {
-                    terminarProceso(procesoActual);
-                    notificaciones.add(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO, procesoActual.obtenerCopiaProceso(), 0, -1, tiempoUsoDelCPU + tiempoTotal));
+                    terminarProceso(procesoActual); // Terminamos el proceso.
+                    notificaciones.add(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO, procesoActual.obtenerCopiaProceso(), 0, -1, tiempoUsoDelCPU + tiempoTotal)); // Notificamos el proceso ya terminó.
+
+                    /**
+                     * Obtemos a todos los procesos que hayan llegado justo cuando el proceso actual terminó para ponerlos en espera.
+                     */
                     listaEspera.addAll(obtenerProcesosEnElMomento(procesos, tiempoTotal));
                     procesos.removeAll(listaEspera);
 
                 } else
-                    ponerEnEspera(procesoActual);
+                    ponerEnEspera(procesoActual); // Ponemos en espera al proceso actual.
 
                 /**
                  * Si la lista de espera está vacía pero aún hay más procesos que no han llegado.

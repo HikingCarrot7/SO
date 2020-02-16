@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 public class DespachadorSRTF extends Despachador
 {
 
-    private volatile boolean todosProcesosEntregados;
-
     public DespachadorSRTF(final CPU CPU)
     {
         super(CPU);
@@ -360,14 +358,6 @@ public class DespachadorSRTF extends Despachador
                     p.PCB.setEstadoProceso(Estado.LISTO);
                     p.setTiempoLlegada(0);
                 });
-    }
-
-    /**
-     * Establece que todos los procesos han sido entregados.
-     */
-    public void todosProcesosEntregados()
-    {
-        todosProcesosEntregados = true;
     }
 
 }

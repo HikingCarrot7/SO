@@ -1,5 +1,6 @@
 package com.sw.view;
 
+import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
@@ -40,6 +41,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         entradaNQuantum = new javax.swing.JSpinner();
         aleatorio = new javax.swing.JButton();
         borrarTodo = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(790, 595));
@@ -48,7 +50,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         setResizable(false);
         getContentPane().setLayout(null);
 
-        title.setFont(new java.awt.Font("Consolas", 0, 24)); // NOI18N
+        title.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 24));
         title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         title.setText("Preparando datos para la simulación");
         title.setMaximumSize(new java.awt.Dimension(680, 50));
@@ -57,7 +59,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(title);
         title.setBounds(52, 10, 680, 50);
 
-        labelNProcesos.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
+        labelNProcesos.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 12));
         labelNProcesos.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelNProcesos.setText("Número de procesos:");
         labelNProcesos.setMaximumSize(new java.awt.Dimension(160, 30));
@@ -66,6 +68,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(labelNProcesos);
         labelNProcesos.setBounds(10, 70, 160, 30);
 
+        aceptarNProcesos.setBackground(new java.awt.Color(255, 255, 255));
         aceptarNProcesos.setFont(new java.awt.Font("Consolas", 0, 11)); // NOI18N
         aceptarNProcesos.setText("Aceptar");
         aceptarNProcesos.setToolTipText("Establecer el número de procesos.");
@@ -76,7 +79,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(aceptarNProcesos);
         aceptarNProcesos.setBounds(280, 70, 80, 30);
 
-        labelQuantum.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
+        labelQuantum.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 12));
         labelQuantum.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelQuantum.setText("QUANTUM:");
         labelQuantum.setMaximumSize(new java.awt.Dimension(160, 30));
@@ -85,7 +88,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(labelQuantum);
         labelQuantum.setBounds(360, 70, 160, 30);
 
-        milisegundosLabel.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
+        milisegundosLabel.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 12));
         milisegundosLabel.setText("Milisegundos");
         milisegundosLabel.setMaximumSize(new java.awt.Dimension(145, 30));
         milisegundosLabel.setMinimumSize(new java.awt.Dimension(145, 30));
@@ -93,10 +96,12 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(milisegundosLabel);
         milisegundosLabel.setBounds(625, 70, 145, 30);
 
+        soporteTabla.setBackground(new java.awt.Color(255, 255, 255));
         soporteTabla.setMaximumSize(new java.awt.Dimension(750, 380));
         soporteTabla.setMinimumSize(new java.awt.Dimension(750, 380));
         soporteTabla.setPreferredSize(new java.awt.Dimension(750, 380));
 
+        soporteScrollTabla.setBackground(new java.awt.Color(255, 255, 255));
         soporteScrollTabla.setMaximumSize(new java.awt.Dimension(450, 400));
         soporteScrollTabla.setMinimumSize(new java.awt.Dimension(450, 400));
         soporteScrollTabla.setPreferredSize(new java.awt.Dimension(450, 400));
@@ -141,6 +146,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(soporteTabla);
         soporteTabla.setBounds(10, 130, 750, 380);
 
+        continuar.setBackground(new java.awt.Color(255, 255, 255));
         continuar.setFont(new java.awt.Font("Consolas", 0, 11)); // NOI18N
         continuar.setText("Continuar");
         continuar.setToolTipText("Continuar con la simulación.");
@@ -151,7 +157,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(continuar);
         continuar.setBounds(660, 520, 100, 30);
 
-        nota.setFont(new java.awt.Font("Consolas", 0, 10)); // NOI18N
+        nota.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 12));
         nota.setText("NOTA: Las unidades de tiempo se toman en milisegundos.");
         nota.setMaximumSize(new java.awt.Dimension(160, 30));
         nota.setMinimumSize(new java.awt.Dimension(160, 30));
@@ -159,6 +165,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(nota);
         nota.setBounds(10, 520, 330, 30);
 
+        regresar.setBackground(new java.awt.Color(255, 255, 255));
         regresar.setFont(new java.awt.Font("Consolas", 0, 11)); // NOI18N
         regresar.setText("<- Regresar");
         regresar.setToolTipText("Regresar a la ventana anterior.");
@@ -186,6 +193,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(entradaNQuantum);
         entradaNQuantum.setBounds(520, 70, 100, 30);
 
+        aleatorio.setBackground(new java.awt.Color(255, 255, 255));
         aleatorio.setFont(new java.awt.Font("Consolas", 0, 11)); // NOI18N
         aleatorio.setText("Datos aleatorios");
         aleatorio.setToolTipText("Generar datos aleatorios.");
@@ -196,6 +204,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(aleatorio);
         aleatorio.setBounds(520, 520, 130, 30);
 
+        borrarTodo.setBackground(new java.awt.Color(255, 255, 255));
         borrarTodo.setFont(new java.awt.Font("Consolas", 0, 11)); // NOI18N
         borrarTodo.setText("Borrar todo");
         borrarTodo.setToolTipText("Borra todo el contenido de la tabla.");
@@ -205,6 +214,12 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         borrarTodo.setPreferredSize(new java.awt.Dimension(90, 30));
         getContentPane().add(borrarTodo);
         borrarTodo.setBounds(410, 520, 100, 30);
+
+        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 255, 153), 5, true));
+        jPanel1.setLayout(null);
+        getContentPane().add(jPanel1);
+        jPanel1.setBounds(0, 0, 784, 567);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -266,6 +281,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
     private javax.swing.JButton continuar;
     private javax.swing.JSpinner entradaNProcesos;
     private javax.swing.JSpinner entradaNQuantum;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel labelNProcesos;
     private javax.swing.JLabel labelQuantum;
     private javax.swing.JLabel milisegundosLabel;

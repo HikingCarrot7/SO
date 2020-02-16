@@ -27,7 +27,6 @@ public class ControladorSeleccion implements ActionListener
 
     private void initMyComponents()
     {
-        VISTA_SELECCION.getSjf().addActionListener(this);
         VISTA_SELECCION.getSrtf().addActionListener(this);
         VISTA_SELECCION.getRr().addActionListener(this);
     }
