@@ -274,7 +274,7 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
                 case Notificacion.CAMBIO_CONTEXTO:
 
                     DIBUJADOR_ESQUEMA.mostrarEnProcesadorProcesoActual(proceso, notificacion.getTiempoUsoCPU());
-                    DIBUJADOR_ESQUEMA.actualizarDiagramaGantt(proceso, notificacion.getTiempoUsoCPU(), notificacion.getMomento());
+                    DIBUJADOR_ESQUEMA.actualizarDiagramaGantt(proceso, notificacion.getTiempoUsoCPU(), notificacion.getMomento(), false);
                     break;
 
                 case Notificacion.PROCESO_DEJO_CPU:
@@ -284,6 +284,9 @@ public class ControladorVistaPrincipal implements ActionListener, Observer
                 case Notificacion.INTERRUPCION:
                     DIBUJADOR_ESQUEMA.dibujarInterrupcion();
                     break;
+
+                case Notificacion.IDLE:
+                    DIBUJADOR_ESQUEMA.actualizarDiagramaGantt(proceso, notificacion.getTiempoUsoCPU(), notificacion.getMomento(), true);
 
                 default:
                     break;

@@ -1,9 +1,11 @@
 package com.sw.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,11 +28,23 @@ public class DespachadorSRTF extends Despachador
         while (running)
             if (todosProcesosEntregados)
             {
+                /* arreglarProcesos(procesos.stream().collect(Collectors.toCollection(ArrayList::new)));
+
+                SRTF bloques = new SRTF(procesos.stream()
+                        .sorted(Comparator.comparing(Proceso::getTiempoLlegada))
+                        .collect(Collectors.toCollection(ArrayList::new)));
+
+                bloques.srtf().entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).forEach(System.out::println);
+
+                for (Proceso proceso : procesos)
+                    System.out.println("El proceso " + proceso.getIdentificador() + " esperó " + bloques.getTiemposEspera()[proceso.PCB.getNumProceso()]);*/
+
+                arreglarProcesos(procesos.stream().collect(Collectors.toCollection(ArrayList::new)));
                 ArrayList<Notificacion> notificaciones = obtenerNotificaciones(procesos.stream()
                         .sorted(Comparator.comparing(Proceso::getTiempoLlegada).thenComparing(p -> p.PCB.getNumProceso()))
                         .collect(Collectors.toCollection(ArrayList::new)));
 
-                notificaciones.stream().filter(n -> n.getProceso() != null).forEach(System.out::println);
+                //notificaciones.stream().filter(n -> n.getProceso() != null).forEach(System.out::println);
                 for (Notificacion notif : notificaciones)
                 {
                     notificar(notif);
@@ -41,16 +55,6 @@ public class DespachadorSRTF extends Despachador
                         esperar();
                     }
                 }
-
-                SRTF bloques = new SRTF(procesos.stream()
-                        .sorted(Comparator.comparing(Proceso::getTiempoLlegada))
-                        .collect(Collectors.toCollection(ArrayList::new)));
-
-                bloques.srtf().entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).forEach(System.out::println);
-
-                for (Proceso proceso : procesos)
-                    System.out.println("El proceso " + proceso.getIdentificador() + " esperó " + bloques.getTiemposEspera()[proceso.PCB.getNumProceso()]);
-
                 break;
             }
 
@@ -80,16 +84,27 @@ public class DespachadorSRTF extends Despachador
 
             Proceso pActual = (Proceso) actual.get("Proceso");
             Proceso pSig = (Proceso) sig.get("Proceso");
+            boolean idle = false;
 
-            notificaciones.add(new Notificacion(
-                    Notificacion.CAMBIO_CONTEXTO,
-                    pActual.obtenerCopiaProceso(),
-                    keys.get(i + 1) - keys.get(i), keys.get(i)));
+            if (((Long) actual.get("Rafaga restante")) < 0)
+            {
+                notificaciones.add(new Notificacion(
+                        Notificacion.IDLE,
+                        pActual.obtenerCopiaProceso(),
+                        keys.get(i + 1) - keys.get(i), keys.get(i)));
+                idle = true;
+                actual.put("Rafaga restante", ((Long) actual.get("Rafaga restante")) * -1);
 
-            if (pActual.PCB.getNumProceso() == pSig.PCB.getNumProceso())
+            } else
+                notificaciones.add(new Notificacion(
+                        Notificacion.CAMBIO_CONTEXTO,
+                        pActual.obtenerCopiaProceso(),
+                        keys.get(i + 1) - keys.get(i), keys.get(i)));
+
+            if (!idle && pActual.PCB.getNumProceso() == pSig.PCB.getNumProceso())
                 notificaciones.add(new Notificacion(Notificacion.INTERRUPCION));
 
-            else if (keys.get(i + 1) - keys.get(i) == ((long) actual.get("Rafaga restante")))
+            else if (!idle && keys.get(i + 1) - keys.get(i) == ((long) actual.get("Rafaga restante")))
                 notificaciones.add(new Notificacion(
                         Notificacion.PROCESO_HA_FINALIZADO,
                         pActual.obtenerCopiaProceso(),
@@ -97,8 +112,9 @@ public class DespachadorSRTF extends Despachador
                         srtf.getTiemposEspera()[pActual.PCB.getNumProceso()],
                         (long) solucion.get(keys.get(i)).get("Rafaga restante") + keys.get(i)));
 
-            else
+            else if (!idle)
                 notificaciones.add(new Notificacion(Notificacion.INTERRUPCION));
+
         }
 
         Proceso last = (Proceso) solucion.get(keys.get(keys.size() - 1)).get("Proceso");
@@ -143,7 +159,7 @@ public class DespachadorSRTF extends Despachador
         {
             for (Proceso proceso : procesos)
             {
-                tiempoTotal += proceso.PCB.getTiempoRafaga();
+                tiempoTotal += proceso.PCB.getTiempoRafaga() + proceso.getTiempoLlegada();
                 nProcesos++;
 
                 if (mapOrderedByEntry.containsKey(proceso.getTiempoLlegada()))
@@ -165,81 +181,97 @@ public class DespachadorSRTF extends Despachador
         {
             HashMap<Long, HashMap<String, Object>> gantt = new HashMap<>();
 
-            for (long i = 0; i < tiempoTotal; i++)
+            for (long tiempoTranscurrido = 0; tiempoTranscurrido < tiempoTotal; tiempoTranscurrido++)
             {
-                if (mapOrderedByEntry.containsKey(i))
+                if (mapOrderedByEntry.containsKey(tiempoTranscurrido))
                 {
-                    listaEspera.addAll(mapOrderedByEntry.get(i));
-                    Proceso shortest = listaEspera.get(0);
+                    anadirListaEspera(mapOrderedByEntry.get(tiempoTranscurrido)); // Se añaden todos los procesos que hayan llegado ahora a la lista de espera.
+                    Proceso shortest = listaEspera.get(0); // Suponemos que el primer proceso de la lista tiene el menor tiempo ráfaga.
 
+                    // Buscamos al que tenga el menor tiempo ráfaga en la lista.
                     for (int j = 1; j < listaEspera.size(); j++)
-                        if (tiempoRestanteProceso(shortest, i) > tiempoRestanteProceso(listaEspera.get(j), i))
+                        if (tiempoRestanteProceso(shortest, tiempoTranscurrido) > tiempoRestanteProceso(listaEspera.get(j), tiempoTranscurrido))
                             shortest = listaEspera.get(j);
 
-                    if (i == 0)
+                    if (tiempoTranscurrido == 0) //Si es el primero que llega.
                     {
-                        eliminarListaEspera(shortest);
-                        procesoActual = shortest;
-                        gantt.put(i, new HashMap<>());
-                        gantt.get(i).put("Proceso", procesoActual);
-                        gantt.get(i).put("Rafaga restante", tiempoRestanteProceso(procesoActual, i));
+                        eliminarListaEspera(shortest); // Eliminamos de la lista de espera al proceso que tiene menos tiempo rágaga.
+                        procesoActual = shortest; // Ahora es el actual.
+                        ponerEnEjecucion(procesoActual);
+                        gantt.put(tiempoTranscurrido, new HashMap<>());
+                        gantt.get(tiempoTranscurrido).put("Proceso", procesoActual);
+                        gantt.get(tiempoTranscurrido).put("Rafaga restante", tiempoRestanteProceso(procesoActual, tiempoTranscurrido));
 
-                    } else if (tiempoRestanteProceso(procesoActual, i) == 0)
+                    } else if (tiempoRestanteProceso(procesoActual, tiempoTranscurrido) == 0) // Si el proceso actual ha finalizado.
                     {
                         eliminarListaEspera(shortest);
+                        finalizarProceso(procesoActual);
                         procesoActual = shortest;
-                        gantt.put(i, new HashMap<>());
-                        gantt.get(i).put("Proceso", procesoActual);
-                        gantt.get(i).put("Rafaga restante", tiempoRestanteProceso(procesoActual, i));
+                        gantt.put(tiempoTranscurrido, new HashMap<>());
+                        gantt.get(tiempoTranscurrido).put("Proceso", procesoActual);
+                        gantt.get(tiempoTranscurrido).put("Rafaga restante", tiempoRestanteProceso(procesoActual, tiempoTranscurrido));
 
-                    } else if (tiempoRestanteProceso(shortest, i) < tiempoRestanteProceso(procesoActual, i))
+                    } else if (tiempoRestanteProceso(shortest, tiempoTranscurrido) < tiempoRestanteProceso(procesoActual, tiempoTranscurrido)) // Si hay una interrupción.
                     {
                         eliminarListaEspera(shortest);
-                        listaEspera.add(procesoActual);
+                        anadirListaEspera(procesoActual);
                         procesoActual = shortest;
-                        gantt.put(i, new HashMap<>());
-                        gantt.get(i).put("Proceso", procesoActual);
-                        gantt.get(i).put("Rafaga restante", tiempoRestanteProceso(procesoActual, i));
+                        gantt.put(tiempoTranscurrido, new HashMap<>());
+                        gantt.get(tiempoTranscurrido).put("Proceso", procesoActual);
+                        gantt.get(tiempoTranscurrido).put("Rafaga restante", tiempoRestanteProceso(procesoActual, tiempoTranscurrido));
 
                     } else
                     {
                         if (!listaEspera.contains(shortest))
-                            listaEspera.add(shortest);
+                            anadirListaEspera(shortest);
 
-                        gantt.put(i, new HashMap<>());
-                        gantt.get(i).put("Proceso", procesoActual);
-                        gantt.get(i).put("Rafaga restante", tiempoRestanteProceso(procesoActual, i));
+                        gantt.put(tiempoTranscurrido, new HashMap<>());
+                        gantt.get(tiempoTranscurrido).put("Proceso", procesoActual);
+                        gantt.get(tiempoTranscurrido).put("Rafaga restante", tiempoRestanteProceso(procesoActual, tiempoTranscurrido));
                     }
 
-                } else if (tiempoRestanteProceso(procesoActual, i) != 0)
+                } else if (tiempoRestanteProceso(procesoActual, tiempoTranscurrido) == 0)
                 {
-                    /*gantt.put(i, new HashMap<>());
-                    gantt.get(i).put("Proceso", procesoActual.getIdentificador());
-                    gantt.get(i).put("Rafaga restante", String.valueOf(tiempoRestanteProceso(procesoActual, i)));*/
+                    finalizarProceso(procesoActual);
 
-                } else
-                {
-                    Proceso shortest = listaEspera.get(0);
-
-                    for (int j = 1; j < listaEspera.size(); j++)
+                    if (listaEspera.isEmpty())
                     {
-                        Proceso proceso = listaEspera.get(j);
+                        Proceso sig = siguienteProceso(mapOrderedByEntry);
 
-                        if (tiempoRestanteProceso(shortest, i) > tiempoRestanteProceso(proceso, i))
-                            shortest = proceso;
+                        if (sig != null)
+                        {
+                            listaEspera.add(sig);
+                            gantt.put(tiempoTranscurrido, new HashMap<>());
+                            gantt.get(tiempoTranscurrido).put("Proceso", sig);
+                            gantt.get(tiempoTranscurrido).put("Rafaga restante", tiempoTranscurrido - sig.getTiempoLlegada());
+                            tiempoTranscurrido = sig.getTiempoLlegada();
+                        }
+                    }
 
-                        else if (tiempoRestanteProceso(shortest, i) == tiempoRestanteProceso(proceso, i))
-                            if (shortest.getTiempoLlegada() > proceso.getTiempoLlegada())
+                    if (!listaEspera.isEmpty())
+                    {
+                        Proceso shortest = listaEspera.get(0);
+
+                        for (int j = 1; j < listaEspera.size(); j++)
+                        {
+                            Proceso proceso = listaEspera.get(j);
+
+                            if (tiempoRestanteProceso(shortest, tiempoTranscurrido) > tiempoRestanteProceso(proceso, tiempoTranscurrido))
                                 shortest = proceso;
 
+                            else if (tiempoRestanteProceso(shortest, tiempoTranscurrido) == tiempoRestanteProceso(proceso, tiempoTranscurrido))
+                                if (shortest.getTiempoLlegada() > proceso.getTiempoLlegada())
+                                    shortest = proceso;
+                        }
+
+                        gantt.put(tiempoTranscurrido, new HashMap<>());
+                        gantt.get(tiempoTranscurrido).put("Proceso", shortest);
+                        gantt.get(tiempoTranscurrido).put("Rafaga restante", tiempoRestanteProceso(shortest, tiempoTranscurrido));
+
+                        eliminarListaEspera(shortest);
+                        procesoActual = shortest;
+                        ponerEnEjecucion(procesoActual);
                     }
-
-                    gantt.put(i, new HashMap<>());
-                    gantt.get(i).put("Proceso", shortest);
-                    gantt.get(i).put("Rafaga restante", tiempoRestanteProceso(shortest, i));
-
-                    eliminarListaEspera(shortest);
-                    procesoActual = shortest;
                 }
 
                 for (Proceso proceso : listaEspera)
@@ -249,9 +281,48 @@ public class DespachadorSRTF extends Despachador
             return gantt;
         }
 
+        private Proceso siguienteProceso(HashMap<Long, ArrayList<Proceso>> procesos)
+        {
+            Optional<Proceso> proceso = procesos.entrySet()
+                    .stream()
+                    .map(Entry::getValue)
+                    .flatMap(Collection::stream)
+                    .filter(p -> p.PCB.getEstadoProceso().equals(Estado.LISTO))
+                    .min(Comparator.comparing(Proceso::getTiempoLlegada));
+
+            return proceso.isPresent() ? procesos.entrySet()
+                    .stream()
+                    .map(Entry::getValue)
+                    .flatMap(Collection::stream)
+                    .filter(p -> p.getTiempoLlegada() == proceso.get().getTiempoLlegada())
+                    .min(Comparator.comparing(pr -> pr.PCB.getTiempoRafaga())).get() : null;
+        }
+
         private void eliminarListaEspera(Proceso proceso)
         {
+            proceso.PCB.setEstadoProceso(Estado.LISTO);
             listaEspera.remove(proceso);
+        }
+
+        private void anadirListaEspera(ArrayList<Proceso> procesos)
+        {
+            procesos.forEach(this::anadirListaEspera);
+        }
+
+        private void anadirListaEspera(Proceso proceso)
+        {
+            proceso.PCB.setEstadoProceso(Estado.ESPERA);
+            listaEspera.add(proceso);
+        }
+
+        private void ponerEnEjecucion(Proceso proceso)
+        {
+            proceso.PCB.setEstadoProceso(Estado.EJECUCION);
+        }
+
+        private void finalizarProceso(Proceso proceso)
+        {
+            proceso.PCB.setEstadoProceso(Estado.TERMINADO);
         }
 
         private long tiempoRestanteProceso(Proceso proceso, long tiempoUsoDelCPU)
@@ -274,6 +345,22 @@ public class DespachadorSRTF extends Despachador
             return tiempoTotal;
         }
 
+    }
+
+    private void arreglarProcesos(ArrayList<Proceso> procesos)
+    {
+        Proceso procesoMinTiempoLlegada = procesos
+                .stream()
+                .min(Comparator.comparing(Proceso::getTiempoLlegada))
+                .get();
+
+        procesos.stream()
+                .filter(p -> p.getTiempoLlegada() == procesoMinTiempoLlegada.getTiempoLlegada())
+                .forEach(p ->
+                {
+                    p.PCB.setEstadoProceso(Estado.LISTO);
+                    p.setTiempoLlegada(0);
+                });
     }
 
     /**

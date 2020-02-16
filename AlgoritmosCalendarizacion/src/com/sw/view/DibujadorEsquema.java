@@ -114,9 +114,9 @@ public class DibujadorEsquema
         DIBUJADOR_PROCESADOR.setProcesoActual(null);
     }
 
-    public void actualizarDiagramaGantt(Proceso proceso, long tiempoUsoDelCPU, long momento)
+    public void actualizarDiagramaGantt(Proceso proceso, long tiempoUsoDelCPU, long momento, boolean idle)
     {
-        DIAGRAMA_GANTT.anadirProcesoAlDiagramaGantt(proceso, tiempoUsoDelCPU, momento);
+        DIAGRAMA_GANTT.anadirProcesoAlDiagramaGantt(proceso, tiempoUsoDelCPU, momento, idle);
     }
 
     public void actualizarPromedioTiemposEspera(double promedioTiemposEspera)

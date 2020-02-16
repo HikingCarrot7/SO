@@ -31,6 +31,7 @@ public class DiagramaGantt
     private final ArrayList<Point> INTERRUPCIONES;
 
     private double promedioTiempoEspera;
+    private boolean idle;
 
     public DiagramaGantt(DibujadorEsquema dibujadorEsquema)
     {
@@ -39,11 +40,18 @@ public class DiagramaGantt
         INTERRUPCIONES = new ArrayList<>();
     }
 
-    public void anadirProcesoAlDiagramaGantt(Proceso proceso, long tiempoUsoDelCPU, long momento)
+    public void anadirProcesoAlDiagramaGantt(Proceso proceso, long tiempoUsoDelCPU, long momento, boolean idle)
     {
         proceso.PCB.setTiempoEjecutado(tiempoUsoDelCPU);
         proceso.PCB.setTiempoRafaga(momento);
         TIEMPO_ESPERA_PROCESOS.add(proceso);
+
+        if (idle)
+        {
+            proceso.setIdentificador("IDLE");
+            proceso.PCB.setEstadoProceso(Estado.NUEVO);
+        }
+
     }
 
     public void dibujarTiemposEsperaProcesos(Graphics2D g)
@@ -89,12 +97,19 @@ public class DiagramaGantt
 
     private void dibujarRectanguloProceso(Graphics2D g, Proceso proceso, int x, int y)
     {
-        if (proceso != null && proceso.esProcesoTerminado())
-        {
-            g.setColor(new Color(250, 145, 120));
-            g.fillRect(x, y, PROCESO_RECT_WIDTH, PROCESO_RECT_HEIGHT);
-            g.setColor(Color.BLACK);
-        }
+        if (proceso != null)
+            if (proceso.esProcesoTerminado())
+            {
+                g.setColor(new Color(250, 145, 120));
+                g.fillRect(x, y, PROCESO_RECT_WIDTH, PROCESO_RECT_HEIGHT);
+                g.setColor(Color.BLACK);
+
+            } else if (proceso.PCB.getEstadoProceso().equals(Estado.NUEVO))
+            {
+                g.setColor(Color.ORANGE);
+                g.fillRect(x, y, PROCESO_RECT_WIDTH, PROCESO_RECT_HEIGHT);
+                g.setColor(Color.BLACK);
+            }
 
         g.drawRect(x, y, PROCESO_RECT_WIDTH, PROCESO_RECT_HEIGHT);
         dibujarIntervalo(g, proceso, x, y);

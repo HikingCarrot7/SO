@@ -12,6 +12,7 @@ public class Notificacion
     public static final int PROCESO_HA_FINALIZADO = 2;
     public static final int NO_QUEDAN_PROCESOS = 3;
     public static final int INTERRUPCION = 4;
+    public static final int IDLE = 5;
 
     private int identificador;
     private Proceso proceso;
