@@ -114,9 +114,14 @@ public class DibujadorEsquema
         DIBUJADOR_PROCESADOR.setProcesoActual(null);
     }
 
-    public void actualizarDiagramaGantt(Proceso proceso, long tiempoEspera)
+    public void actualizarDiagramaGantt(Proceso proceso, long tiempoUsoDelCPU, long momento, boolean idle)
     {
-        DIAGRAMA_GANTT.anadirProcesoAlDiagramaGantt(proceso, tiempoEspera);
+        DIAGRAMA_GANTT.anadirProcesoAlDiagramaGantt(proceso, tiempoUsoDelCPU, momento, idle);
+    }
+
+    public void actualizarPromedioTiemposEspera(double promedioTiemposEspera)
+    {
+        DIAGRAMA_GANTT.setPromedioTiempoEspera(promedioTiemposEspera);
     }
 
     public void marcarUltimoProceso()
@@ -135,7 +140,6 @@ public class DibujadorEsquema
         DIBUJADOR_PROCESADOR.setProcesoActual(null);
         DIBUJADOR_PROCESADOR.setTiempoUsoCPUActual(-1);
         DIAGRAMA_GANTT.setPromedioTiempoEspera(0);
-        DIAGRAMA_GANTT.setnProcesos(0);
         DIAGRAMA_GANTT.limpiarInterrupciones();
     }
 
