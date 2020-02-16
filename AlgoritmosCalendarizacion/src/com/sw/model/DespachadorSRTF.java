@@ -29,7 +29,7 @@ public class DespachadorSRTF extends Despachador
                         .sorted(Comparator.comparing(Proceso::getTiempoLlegada).thenComparing(p -> p.PCB.getNumProceso()))
                         .collect(Collectors.toCollection(ArrayList::new)));
 
-                // notificaciones.stream().filter(n -> n.getProceso() != null).forEach(System.out::println);
+                //notificaciones.stream().filter(n -> n.getProceso() != null).forEach(System.out::println);
                 for (Notificacion notif : notificaciones)
                 {
                     notificar(notif);
@@ -86,7 +86,7 @@ public class DespachadorSRTF extends Despachador
             if (!interrumpido)
             {
                 procesoActual.PCB.setEstadoProceso(Estado.TERMINADO); // El proceso termina.
-                aumentarTiemposEspera(procesos, tiemposEspera, procesoActual.PCB.tiempoRestanteParaFinalizarProceso()); // Se aumentan los tiempos de espera.
+                aumentarTiemposEspera(procesos, tiemposEspera, tiempoTotalUsoDelCPU + procesoActual.PCB.tiempoRestanteParaFinalizarProceso()); // Se aumentan los tiempos de espera.
 
                 //Se crean los bloques de información a notificar en la vista.
                 bloques.add(new Notificacion(Notificacion.CAMBIO_CONTEXTO, procesoActual.obtenerCopiaProceso(), procesoActual.PCB.tiempoRestanteParaFinalizarProceso(), tiemposEspera[procesoActual.PCB.getNumProceso()]));
@@ -105,7 +105,7 @@ public class DespachadorSRTF extends Despachador
         }
 
         procesoActual.PCB.setEstadoProceso(Estado.TERMINADO); // El último proceso termina.
-        aumentarTiemposEspera(procesos, tiemposEspera, procesoActual.PCB.tiempoRestanteParaFinalizarProceso()); // Aumentamos los tiempos de espera.
+        aumentarTiemposEspera(procesos, tiemposEspera, tiempoTotalUsoDelCPU + procesoActual.PCB.tiempoRestanteParaFinalizarProceso()); // Aumentamos los tiempos de espera.
 
         // Se crean los bloques a notificar a la vista.
         bloques.add(new Notificacion(Notificacion.CAMBIO_CONTEXTO, procesoActual.obtenerCopiaProceso(), procesoActual.PCB.tiempoRestanteParaFinalizarProceso(), tiemposEspera[procesoActual.PCB.getNumProceso()]));
@@ -270,14 +270,15 @@ public class DespachadorSRTF extends Despachador
      *
      * @param procesos Los procesos que aún no se han despachado.
      * @param tiemposEspera La lista de los tiempos de espera de cada proceso.
-     * @param tiempoEspera El tiempo de espera que se añadirá a cada proceso.
+     * @param tiempoUsoDelCPU El tiempo de espera que se añadirá a cada proceso.
      *
      */
-    private void aumentarTiemposEspera(ArrayList<Proceso> procesos, int[] tiemposEspera, long tiempoEspera)
+    private void aumentarTiemposEspera(ArrayList<Proceso> procesos, int[] tiemposEspera, long tiempoUsoDelCPU)
     {
+        System.out.println(tiempoUsoDelCPU);
         for (Proceso proceso : procesos)
             if (proceso.PCB.getEstadoProceso().equals(Estado.ESPERA))
-                tiemposEspera[proceso.PCB.getNumProceso()] += tiempoEspera;
+                tiemposEspera[proceso.PCB.getNumProceso()] += (((tiempoUsoDelCPU) - proceso.getTiempoLlegada()));
     }
 
     /**
