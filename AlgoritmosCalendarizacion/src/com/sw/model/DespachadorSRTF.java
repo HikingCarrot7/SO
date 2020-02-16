@@ -28,24 +28,12 @@ public class DespachadorSRTF extends Despachador
         while (running)
             if (todosProcesosEntregados)
             {
-                /* arreglarProcesos(procesos.stream().collect(Collectors.toCollection(ArrayList::new)));
-
-                SRTF bloques = new SRTF(procesos.stream()
-                        .sorted(Comparator.comparing(Proceso::getTiempoLlegada))
-                        .collect(Collectors.toCollection(ArrayList::new)));
-
-                bloques.srtf().entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).forEach(System.out::println);
-
-                for (Proceso proceso : procesos)
-                    System.out.println("El proceso " + proceso.getIdentificador() + " esperó " + bloques.getTiemposEspera()[proceso.PCB.getNumProceso()]);*/
-
                 arreglarProcesos(procesos.stream().collect(Collectors.toCollection(ArrayList::new)));
 
                 ArrayList<Notificacion> notificaciones = obtenerNotificaciones(procesos.stream()
                         .sorted(Comparator.comparing(Proceso::getTiempoLlegada).thenComparing(p -> p.PCB.getNumProceso()))
                         .collect(Collectors.toCollection(ArrayList::new)));
 
-                //notificaciones.stream().filter(n -> n.getProceso() != null).forEach(System.out::println);
                 for (Notificacion notif : notificaciones)
                 {
                     notificar(notif);
@@ -56,6 +44,7 @@ public class DespachadorSRTF extends Despachador
                         esperar();
                     }
                 }
+
                 break;
             }
 
@@ -158,7 +147,8 @@ public class DespachadorSRTF extends Despachador
         private void initMapOrderedByEntry()
         {
             for (Proceso proceso : procesos)
-
+            {
+                tiempoTotal += proceso.getTiempoLlegada() + proceso.PCB.getTiempoRafaga();
                 if (mapOrderedByEntry.containsKey(proceso.getTiempoLlegada()))
                 {
                     if (!mapOrderedByEntry.get(proceso.getTiempoLlegada()).contains(proceso))
@@ -169,11 +159,11 @@ public class DespachadorSRTF extends Despachador
                     mapOrderedByEntry.put(proceso.getTiempoLlegada(), new ArrayList<>());
                     mapOrderedByEntry.get(proceso.getTiempoLlegada()).add(proceso);
                 }
+            }
 
             Proceso procesoMayorTiempoLlegada = procesoMayorTiempoLlegada(procesos);
-            tiempoTotal += procesoMayorTiempoLlegada.PCB.getTiempoRafaga() + procesoMayorTiempoLlegada.getTiempoLlegada();
+            //tiempoTotal += procesoMayorTiempoLlegada.PCB.getTiempoRafaga() + procesoMayorTiempoLlegada.getTiempoLlegada();
 
-            System.out.println(tiempoTotal);
         }
 
         private HashMap<Long, HashMap<String, Object>> srtf()
