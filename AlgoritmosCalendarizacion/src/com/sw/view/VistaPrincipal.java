@@ -206,6 +206,7 @@ public class VistaPrincipal extends javax.swing.JFrame
         regresar.setBounds(10, 5, 100, 25);
 
         datosRecuperadosLabel.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 14));
+        datosRecuperadosLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         datosRecuperadosLabel.setText("Datos recuperados");
         datosRecuperadosLabel.setMaximumSize(new java.awt.Dimension(205, 25));
         datosRecuperadosLabel.setMinimumSize(new java.awt.Dimension(205, 25));
@@ -214,6 +215,7 @@ public class VistaPrincipal extends javax.swing.JFrame
         datosRecuperadosLabel.setBounds(10, 35, 205, 25);
 
         procesosFinalizadosLabel.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 14));
+        procesosFinalizadosLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         procesosFinalizadosLabel.setText("Procesos finalizados");
         procesosFinalizadosLabel.setMaximumSize(new java.awt.Dimension(205, 25));
         procesosFinalizadosLabel.setMinimumSize(new java.awt.Dimension(205, 25));
@@ -222,6 +224,7 @@ public class VistaPrincipal extends javax.swing.JFrame
         procesosFinalizadosLabel.setBounds(10, 305, 205, 25);
 
         tiemposEsperaLabel.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 14));
+        tiemposEsperaLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         tiemposEsperaLabel.setText("Tiempos de espera");
         tiemposEsperaLabel.setMaximumSize(new java.awt.Dimension(155, 25));
         tiemposEsperaLabel.setMinimumSize(new java.awt.Dimension(155, 25));
@@ -230,6 +233,7 @@ public class VistaPrincipal extends javax.swing.JFrame
         tiemposEsperaLabel.setBounds(830, 35, 155, 25);
 
         title.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 16));
+        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         title.setText("Representación gráfica de la simulación");
         title.setMaximumSize(new java.awt.Dimension(390, 25));
         title.setMinimumSize(new java.awt.Dimension(390, 25));
