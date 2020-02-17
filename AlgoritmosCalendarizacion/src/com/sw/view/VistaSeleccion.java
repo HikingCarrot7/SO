@@ -50,7 +50,7 @@ public class VistaSeleccion extends javax.swing.JFrame
         getContentPane().add(rr);
         rr.setBounds(10, 110, 280, 50);
 
-        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(null);
 
         srtf.setBackground(new java.awt.Color(255, 255, 255));

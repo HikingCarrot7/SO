@@ -157,7 +157,7 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(continuar);
         continuar.setBounds(660, 520, 100, 30);
 
-        nota.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 12));
+        nota.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 10));
         nota.setText("NOTA: Las unidades de tiempo se toman en milisegundos.");
         nota.setMaximumSize(new java.awt.Dimension(160, 30));
         nota.setMinimumSize(new java.awt.Dimension(160, 30));
@@ -215,8 +215,8 @@ public class VistaRecogeDatos extends javax.swing.JFrame
         getContentPane().add(borrarTodo);
         borrarTodo.setBounds(410, 520, 100, 30);
 
-        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
-        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 255, 153), 5, true));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 5, true));
         jPanel1.setLayout(null);
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, 0, 784, 567);

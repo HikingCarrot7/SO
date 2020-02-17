@@ -229,7 +229,7 @@ public class VistaPrincipal extends javax.swing.JFrame
         getContentPane().add(tiemposEsperaLabel);
         tiemposEsperaLabel.setBounds(830, 35, 155, 25);
 
-        title.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 20));
+        title.setFont(new java.awt.Font("DejaVu Sans", Font.BOLD, 16));
         title.setText("Representación gráfica de la simulación");
         title.setMaximumSize(new java.awt.Dimension(390, 25));
         title.setMinimumSize(new java.awt.Dimension(390, 25));
@@ -237,8 +237,8 @@ public class VistaPrincipal extends javax.swing.JFrame
         getContentPane().add(title);
         title.setBounds(335, 5, 390, 25);
 
-        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
-        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 255, 153), 5, true));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 5, true));
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, 0, 994, 571);
 

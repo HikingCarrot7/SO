@@ -81,8 +81,8 @@ public class DibujadorEsquema
         g.drawString("Simbología", OFFSET_X, INICIAL_Y);
 
         g.setFont(new Font(CURRENT_FONT.getName(), CURRENT_FONT.getStyle(), CURRENT_FONT.getSize() - 1));
-        g.setColor(Color.red);
-        g.fillRect(OFFSET_X, INICIAL_Y + 4, 25, 12);
+        g.setColor(new Color(250, 145, 120));
+        g.fillRect(OFFSET_X, INICIAL_Y + 6, 25, 12);
         g.setColor(Color.black);
         g.drawString("Representa que un proceso", OFFSET_X + 30, INICIAL_Y + SEPARACION);
         g.drawString("ha concluido su ejecución", OFFSET_X + 30, INICIAL_Y + SEPARACION * 2);
