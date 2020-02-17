@@ -244,7 +244,7 @@ public class VistaPrincipal extends javax.swing.JFrame
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 5, true));
         getContentPane().add(jPanel1);
-        jPanel1.setBounds(0, 0, 994, 571);
+        jPanel1.setBounds(0, 0, 994, 572);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

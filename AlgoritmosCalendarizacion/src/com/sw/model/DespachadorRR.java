@@ -68,10 +68,12 @@ public class DespachadorRR extends Despachador
             ponerEnEspera(obtenerProcesosEnElMomento(procesos, obtenerMenorTiempoLlegada(procesos)));
             procesos.removeAll(listaEspera);
             tiempoTotal += listaEspera.get(0).getTiempoLlegada();
+            int i = 0;
 
             while (!listaEspera.isEmpty())
             {
-                Proceso procesoActual = listaEspera.remove(0);
+                i %= listaEspera.size();
+                Proceso procesoActual = listaEspera.get(i++);
                 ponerEnEjecucion(procesoActual);
 
                 /**
@@ -99,16 +101,11 @@ public class DespachadorRR extends Despachador
                 if (procesoActual.esProcesoTerminado())
                 {
                     terminarProceso(procesoActual); // Terminamos el proceso.
+                    listaEspera.remove(procesoActual);
                     notificaciones.add(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO, procesoActual.obtenerCopiaProceso(), 0, tiemposEspera[procesoActual.PCB.getNumProceso()], tiempoUsoDelCPU + tiempoTotal)); // Notificamos el proceso ya terminó.
-
-                    /**
-                     * Obtemos a todos los procesos que hayan llegado justo cuando el proceso actual terminó.
-                     */
-                    ponerEnEspera(obtenerProcesosEnElMomento(procesos, tiempoTotal + tiempoUsoDelCPU));
                     procesos.removeAll(listaEspera);
-
-                } else
-                    ponerEnEspera(procesoActual); // Ponemos en espera al proceso actual.
+                    i--;
+                }
 
                 /**
                  * Si la lista de espera está vacía pero aún hay más procesos que no han llegado.
@@ -139,13 +136,14 @@ public class DespachadorRR extends Despachador
         /**
          * Aumenta el tiempo de espera a todos los procesos que estén en espera.
          *
-         * @param procesos La lista de todos los procesos que queden por ejecutar.
+         * @param listaEspera La lista de todos los procesos que queden por ejecutar.
          * @param tiemposEspera Los tiempos de espera de todos los procesos.
          * @param tiempoAumentar El tiempo para aumentar en los procesos.
+         *
          */
-        private void aumentarTiemposEspera(ArrayList<Proceso> procesos, int[] tiemposEspera, long tiempoAumentar)
+        private void aumentarTiemposEspera(ArrayList<Proceso> listaEspera, int[] tiemposEspera, long tiempoAumentar)
         {
-            procesos.stream()
+            listaEspera.stream()
                     .filter(p -> p.PCB.getEstadoProceso().equals(Estado.ESPERA))
                     .forEach(p ->
                     {
@@ -182,7 +180,7 @@ public class DespachadorRR extends Despachador
         {
             return cualquierProceso.PCB.getEstadoProceso().equals(Estado.LISTO)
                     && cualquierProceso.getTiempoLlegada() >= tiempoUsoDelCPU
-                    && cualquierProceso.getTiempoLlegada() <= tiempoUsoDelCPU + obtenerTiempoUsoCPU(procesoActual);
+                    && cualquierProceso.getTiempoLlegada() < tiempoUsoDelCPU + obtenerTiempoUsoCPU(procesoActual);
         }
 
         /**
