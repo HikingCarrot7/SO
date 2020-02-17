@@ -1,7 +1,6 @@
 package com.sw.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.stream.Collectors;
@@ -41,7 +40,6 @@ public class DespachadorRR extends Despachador
                     }
                 }
 
-                System.out.println(Arrays.toString(rr.getTiemposEspera()));
                 todosProcesosEntregados = false;
                 break;
             }
@@ -52,6 +50,7 @@ public class DespachadorRR extends Despachador
     {
 
         private int[] tiemposEspera;
+        private boolean[] esPrimeraLlegada;
         private ArrayList<Proceso> listaEspera;
         private long tiempoTotal;
 
@@ -63,10 +62,11 @@ public class DespachadorRR extends Despachador
         private ArrayList<Notificacion> rr(ArrayList<Proceso> procesos)
         {
             tiemposEspera = new int[procesos.size()];
+            esPrimeraLlegada = new boolean[procesos.size()];
+            initListaEsPrimeraLlegada();
             ArrayList<Notificacion> notificaciones = new ArrayList<>();
             ponerEnEspera(obtenerProcesosEnElMomento(procesos, obtenerMenorTiempoLlegada(procesos)));
             procesos.removeAll(listaEspera);
-            System.out.println(listaEspera);
             tiempoTotal += listaEspera.get(0).getTiempoLlegada();
 
             while (!listaEspera.isEmpty())
@@ -99,7 +99,7 @@ public class DespachadorRR extends Despachador
                 if (procesoActual.esProcesoTerminado())
                 {
                     terminarProceso(procesoActual); // Terminamos el proceso.
-                    notificaciones.add(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO, procesoActual.obtenerCopiaProceso(), 0, -1, tiempoUsoDelCPU + tiempoTotal)); // Notificamos el proceso ya terminó.
+                    notificaciones.add(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO, procesoActual.obtenerCopiaProceso(), 0, tiemposEspera[procesoActual.PCB.getNumProceso()], tiempoUsoDelCPU + tiempoTotal)); // Notificamos el proceso ya terminó.
 
                     /**
                      * Obtemos a todos los procesos que hayan llegado justo cuando el proceso actual terminó.
@@ -128,6 +128,14 @@ public class DespachadorRR extends Despachador
             return notificaciones;
         }
 
+        private void initListaEsPrimeraLlegada()
+        {
+            for (int i = 0; i < esPrimeraLlegada.length; i++)
+                esPrimeraLlegada[i] = true;
+
+            esPrimeraLlegada[0] = false;
+        }
+
         /**
          * Aumenta el tiempo de espera a todos los procesos que estén en espera.
          *
@@ -139,7 +147,11 @@ public class DespachadorRR extends Despachador
         {
             procesos.stream()
                     .filter(p -> p.PCB.getEstadoProceso().equals(Estado.ESPERA))
-                    .forEach(p -> tiemposEspera[p.PCB.getNumProceso()] += tiempoAumentar);
+                    .forEach(p ->
+                    {
+                        tiemposEspera[p.PCB.getNumProceso()] += esPrimeraLlegada[p.PCB.getNumProceso()] ? (tiempoTotal + tiempoAumentar) - p.getTiempoLlegada() : tiempoAumentar;
+                        esPrimeraLlegada[p.PCB.getNumProceso()] = false;
+                    });
         }
 
         /**
