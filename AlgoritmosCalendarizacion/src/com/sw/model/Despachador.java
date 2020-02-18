@@ -41,7 +41,6 @@ public abstract class Despachador extends Observable implements Runnable
 
     public void cambiarContexto(Proceso proceso, long tiempoUsoCPU)
     {
-        notificar(new Notificacion(Notificacion.CAMBIO_CONTEXTO, proceso, tiempoUsoCPU, tiempoEsperaProceso(proceso)));
         proceso.PCB.setEstadoProceso(Estado.EJECUCION);
         cpu.ejecutarProceso(proceso, tiempoUsoCPU);
     }

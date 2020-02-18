@@ -35,7 +35,7 @@ public class DespachadorRR extends Despachador
 
                     if (cpu != null)
                     {
-                        cpu.ejecutarProceso(notif.getProceso(), notif.getTiempoUsoCPU());
+                        cambiarContexto(notif.getProceso(), notif.getTiempoUsoCPU());
                         esperar();
                     }
                 }
@@ -103,6 +103,8 @@ public class DespachadorRR extends Despachador
                     terminarProceso(procesoActual); // Terminamos el proceso.
                     listaEspera.remove(procesoActual);
                     notificaciones.add(new Notificacion(Notificacion.PROCESO_HA_FINALIZADO, procesoActual.obtenerCopiaProceso(), 0, tiemposEspera[procesoActual.PCB.getNumProceso()], tiempoUsoDelCPU + tiempoTotal)); // Notificamos el proceso ya terminó.
+                    ponerEnEspera(obtenerProcesosEnElMomento(procesos, tiempoTotal + tiempoUsoDelCPU));
+                    listaEspera = listaEspera.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
                     procesos.removeAll(listaEspera);
                     i--;
                 }
