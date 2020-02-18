@@ -38,7 +38,7 @@ public class DespachadorSRTF extends Despachador
 
                     if (cpu != null && notif.getIdentificador() != Notificacion.INTERRUPCION)
                     {
-                        cpu.ejecutarProceso(notif.getProceso(), notif.getTiempoUsoCPU());
+                        cambiarContexto(notif.getProceso(), notif.getTiempoUsoCPU());
                         esperar();
                     }
                 }
