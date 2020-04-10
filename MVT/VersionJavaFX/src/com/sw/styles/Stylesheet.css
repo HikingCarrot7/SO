@@ -1,0 +1,299 @@
+/*
+    Created on : 16/03/2020, 06:11:38 AM
+    Author     : SonBear
+*/
+
+
+/*-----------------------------------TODOS LOS CONTROLES-----------------------------------*/
+
+.root {
+    -fx-font-family: 'Helvetica Neue';
+    -fx-font-size: 15px;
+    -fx-font-style: normal;
+    -fx-font-weight: normal;
+    -fx-background-color: rgb(252, 252, 252);
+}
+
+
+/*-----------------------------------BOTONES-----------------------------------*/
+
+.button {
+    -fx-background-color: orange;
+}
+
+.button:hover {
+    -fx-background-color: rgb(252, 178, 21);
+}
+
+
+/*--------BOTONES GENÉRICOS--------*/
+
+.button-effect {
+    -fx-background-color: gainsboro;
+}
+
+.button-reset {
+    -fx-background-position: center, center;
+    -fx-background-repeat: no-repeat;
+}
+
+.button-effect:hover {
+    -fx-background-color: gray;
+    -fx-text-fill: white;
+    /*-fx-skin: 'controller.MyButtonSkin';*/
+    /*-fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
+        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);*/
+    /*-fx-background-color:
+        -fx-focus-color,
+        -fx-control-inner-background,
+        -fx-faint-focus-color,
+        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);*/
+}
+
+.button-effect:pressed {
+    -fx-background-color: gray;
+    -fx-text-fill: white;
+    /*-fx-skin: 'controller.MyButtonSkin';*/
+    /*-fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
+        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);*/
+    /*-fx-background-color:
+        -fx-focus-color,
+        -fx-control-inner-background,
+        -fx-faint-focus-color,
+        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);*/
+}
+
+
+/*.button
+{
+    -fx-background-color : #FFF;
+    -fx-border-color: #355ECE;
+    -fx-text-fill:  #0C3988;
+}
+.button:hover
+{
+    -fx-background-color : #355ECE ;
+    -fx-text-fill:  #FFF;
+}
+.button:pressed
+{
+    -fx-background-color : #0C39FF ;
+    -fx-text-fill: #FFF;
+}*/
+
+.button2 {
+    -fx-background-color: #0C39FF;
+    -fx-border-color: #FFF;
+    -fx-text-fill: #FFF;
+}
+
+.button2:hover {
+    -fx-background-color: #0C3988;
+    -fx-text-fill: #FFF;
+}
+
+.button2:pressed {
+    -fx-background-color: #0C3400;
+    -fx-text-fill: #FFF;
+}
+
+
+/*--------BOTONES PARA CANCELAR / ELIMINAR--------*/
+
+.button-eliminar {
+    -fx-background-color: tomato;
+    -fx-text-fill: white;
+}
+
+.button-eliminar:pressed {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+}
+
+.button-eliminar:hover {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+}
+
+
+/*-----------------------------------TOOLTIP-----------------------------------*/
+
+.tooltip {
+    -fx-background-color: #BCBCBC;
+    -fx-text-fill: black;
+}
+
+
+/*-----------------------------------COMBOBOX-----------------------------------*/
+
+.combo-box .list-cell {
+    -fx-background: white;
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-padding: 3 0 2 7;
+    -fx-cell-size: 1.66667em;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: white, white;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 8, 0.0, 0, 0);
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-padding: 4 0 4 5;
+    /* No alternate highlighting */
+    -fx-background-color: white;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected,
+.combo-box-popup .list-view .list-cell:filled:selected:hover {
+    -fx-background: black;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: white;
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+.combo-box-base {
+    /*-fx-skin: "com.sun.javafx.scene.control.skin.ComboBoxBaseSkin";*/
+    -fx-background-color: white, white, white, white;
+    -fx-background-radius: 5, 5, 4, 3;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-padding: 0;
+}
+
+.combo-box-base:hover {
+    -fx-color: -fx-hover-base;
+}
+
+.combo-box-base:showing {
+    -fx-color: -fx-pressed-base;
+}
+
+.combo-box-base:focused {
+    -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-radius: 6.4, 4, 5, 3;
+    -fx-background-insets: -1.4, 0, 1, 2;
+}
+
+.combo-box-base:disabled {
+    -fx-opacity: .4;
+}
+
+
+/*-----------------------------------LABELS-----------------------------------*/
+
+.label-month-title {
+    -fx-background-color: #DCDCDC;
+    -fx-text-fill: back;
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+    -fx-font-size: 1.2em;
+    -fx-background-radius: 5px 5px 0px 0px;
+}
+
+
+/*-----------------------------------TABLAS-----------------------------------*/
+
+.table-view .column-header,
+.table-view .column-header-background .filler {
+    -fx-cell-size: 20;
+    -fx-background-color: rgb(0, 228, 168);
+    -fx-border-color: white;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+.table-view .cell {
+    -fx-cell-size: 30;
+    -fx-text-fill: #000000;
+    -fx-alignment: CENTER;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: rgb(203, 245, 225);
+}
+
+.table-row-cell:even {
+    -fx-background-color: white;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgb(0, 159, 117);
+    -fx-selection-bar: rgb(0, 159, 117);
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: white;
+}
+
+
+/* scroll bar starts here */
+
+/* The increment and decrement button CSS class of scrollbar */
+
+.table-view .increment-button,
+.table-view .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 2em;
+}
+
+
+/* The main scrollbar **track** CSS class  */
+
+.table-view .scroll-bar:horizontal .track,
+.table-view .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: derive(#6C6C6C, 80%);
+    -fx-background-radius: 2em;
+    -fx-border-radius: 2em;
+}
+
+
+/* The main scrollbar **thumb** CSS class which we drag every time (movable) */
+
+.table-view .scroll-bar:horizontal .thumb,
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: derive(#6C6C6C, 60%);
+    -fx-background-insets: 2, 0, 0;
+    -fx-background-radius: 2em;
+}
+
+
+/*-----------------------------------CHECK BOX-----------------------------------*/
+
+.check-box .box {
+    -fx-background-color: #DCDCDC;
+    -fx-shadow-hightlight-color: #DCDCDC;
+}
+
+.check-box:hover .box {
+    -fx-background-color: #BCBCBC;
+    -fx-shadow-hightlight-color: #BCBCBC;
+}
+
+
+/*-----------------------------------CHARTS-----------------------------------*/
+
+.chart {
+    -fx-padding: 10px;
+    -fx-background-color: transparent;
+    -fx-legend-visible: false;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-pie {
+    -fx-border-color: derive(-fx-pie-color, 1%);
+    -fx-border-width: 0px;
+}
