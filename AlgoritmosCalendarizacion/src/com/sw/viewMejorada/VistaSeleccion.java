@@ -1,5 +1,17 @@
 package com.sw.viewMejorada;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.GridLayout;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+
 /**
  *
  * @author Nicolás
@@ -23,36 +35,36 @@ public class VistaSeleccion extends javax.swing.JFrame
     private void initComponents()
     {
 
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
-        jPanel2 = new javax.swing.JPanel();
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        jLabel2 = new javax.swing.JLabel();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(15, 0), new java.awt.Dimension(15, 0), new java.awt.Dimension(15, 32767));
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
+        filler4 = new Box.Filler(new Dimension(10, 0), new Dimension(10, 0), new Dimension(10, 32767));
+        jPanel2 = new JPanel();
+        filler2 = new Box.Filler(new Dimension(0, 10), new Dimension(0, 10), new Dimension(32767, 10));
+        jLabel2 = new JLabel();
+        filler1 = new Box.Filler(new Dimension(0, 10), new Dimension(0, 10), new Dimension(32767, 10));
+        filler3 = new Box.Filler(new Dimension(15, 0), new Dimension(15, 0), new Dimension(15, 32767));
+        jPanel1 = new JPanel();
+        jButton1 = new JButton();
+        jButton2 = new JButton();
+        filler5 = new Box.Filler(new Dimension(0, 10), new Dimension(0, 10), new Dimension(32767, 10));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(320, 160));
-        setMinimumSize(new java.awt.Dimension(320, 160));
-        setPreferredSize(new java.awt.Dimension(320, 160));
-        getContentPane().add(filler4, java.awt.BorderLayout.WEST);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new Dimension(320, 160));
+        setMinimumSize(new Dimension(320, 160));
+        setPreferredSize(new Dimension(320, 160));
+        getContentPane().add(filler4, BorderLayout.WEST);
 
-        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
+        jPanel2.setLayout(new BoxLayout(jPanel2, BoxLayout.Y_AXIS));
         jPanel2.add(filler2);
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel2.setText("Algoritmo a simular");
         jLabel2.setAlignmentX(0.5F);
         jPanel2.add(jLabel2);
         jPanel2.add(filler1);
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.NORTH);
-        getContentPane().add(filler3, java.awt.BorderLayout.EAST);
+        getContentPane().add(jPanel2, BorderLayout.NORTH);
+        getContentPane().add(filler3, BorderLayout.EAST);
 
-        jPanel1.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel1.setLayout(new GridLayout(2, 1, 0, 5));
 
         jButton1.setText("Short Remainig Time First");
         jPanel1.add(jButton1);
@@ -60,8 +72,8 @@ public class VistaSeleccion extends javax.swing.JFrame
         jButton2.setText("Round Robin");
         jPanel1.add(jButton2);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
-        getContentPane().add(filler5, java.awt.BorderLayout.SOUTH);
+        getContentPane().add(jPanel1, BorderLayout.CENTER);
+        getContentPane().add(filler5, BorderLayout.SOUTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -93,7 +105,7 @@ public class VistaSeleccion extends javax.swing.JFrame
 
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() ->
+        EventQueue.invokeLater(() ->
         {
             VistaSeleccion vista = new VistaSeleccion();
             vista.setVisible(true);
@@ -102,15 +114,15 @@ public class VistaSeleccion extends javax.swing.JFrame
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.Box.Filler filler3;
-    private javax.swing.Box.Filler filler4;
-    private javax.swing.Box.Filler filler5;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private Box.Filler filler1;
+    private Box.Filler filler2;
+    private Box.Filler filler3;
+    private Box.Filler filler4;
+    private Box.Filler filler5;
+    private JButton jButton1;
+    private JButton jButton2;
+    private JLabel jLabel2;
+    private JPanel jPanel1;
+    private JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }

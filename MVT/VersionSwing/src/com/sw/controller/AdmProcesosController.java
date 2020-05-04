@@ -187,7 +187,7 @@ public class AdmProcesosController implements Controller<ArrayList<Proceso>>
 
     private boolean nombreProcesoValido(String nombre)
     {
-        return !nombre.trim().equals("");
+        return !nombre.trim().isEmpty();
     }
 
     private boolean nombreProcesoRepetido(String nombre)

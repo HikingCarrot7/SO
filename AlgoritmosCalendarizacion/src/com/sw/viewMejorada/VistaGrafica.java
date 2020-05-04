@@ -1,5 +1,26 @@
 package com.sw.viewMejorada;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Nicolás
@@ -7,9 +28,6 @@ package com.sw.viewMejorada;
 public class VistaGrafica extends javax.swing.JFrame
 {
 
-    /**
-     * Creates new form VistaGrafica
-     */
     public VistaGrafica()
     {
         initComponents();
@@ -23,63 +41,63 @@ public class VistaGrafica extends javax.swing.JFrame
     private void initComponents()
     {
 
-        jPanel7 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
-        jPanel8 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jPanel9 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel6 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jPanel7 = new JPanel();
+        jLabel1 = new JLabel();
+        filler1 = new Box.Filler(new Dimension(0, 10), new Dimension(0, 10), new Dimension(32767, 10));
+        filler2 = new Box.Filler(new Dimension(0, 10), new Dimension(0, 10), new Dimension(32767, 10));
+        jPanel8 = new JPanel();
+        jButton3 = new JButton();
+        jPanel9 = new JPanel();
+        jButton4 = new JButton();
+        jSplitPane1 = new JSplitPane();
+        jPanel6 = new JPanel();
+        jScrollPane3 = new JScrollPane();
+        jTable3 = new JTable();
+        jPanel4 = new JPanel();
+        jPanel5 = new JPanel();
+        jPanel2 = new JPanel();
+        jPanel1 = new JPanel();
+        jScrollPane1 = new JScrollPane();
+        jTable1 = new JTable();
+        jPanel3 = new JPanel();
+        jScrollPane2 = new JScrollPane();
+        jTable2 = new JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(800, 400));
-        setPreferredSize(new java.awt.Dimension(1000, 600));
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(800, 400));
+        setPreferredSize(new Dimension(1000, 600));
 
-        jPanel7.setLayout(new java.awt.BorderLayout());
+        jPanel7.setLayout(new BorderLayout());
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setFont(new Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setText("Simulación");
-        jPanel7.add(jLabel1, java.awt.BorderLayout.CENTER);
-        jPanel7.add(filler1, java.awt.BorderLayout.PAGE_END);
-        jPanel7.add(filler2, java.awt.BorderLayout.PAGE_START);
+        jPanel7.add(jLabel1, BorderLayout.CENTER);
+        jPanel7.add(filler1, BorderLayout.PAGE_END);
+        jPanel7.add(filler2, BorderLayout.PAGE_START);
 
-        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 5));
+        jPanel8.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
         jButton3.setText("Iniciar simulación");
         jPanel8.add(jButton3);
 
-        jPanel7.add(jPanel8, java.awt.BorderLayout.LINE_END);
+        jPanel7.add(jPanel8, BorderLayout.LINE_END);
 
-        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 5));
+        jPanel9.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
         jButton4.setText("Regresar");
         jPanel9.add(jButton4);
 
-        jPanel7.add(jPanel9, java.awt.BorderLayout.LINE_START);
+        jPanel7.add(jPanel9, BorderLayout.LINE_START);
 
-        getContentPane().add(jPanel7, java.awt.BorderLayout.NORTH);
+        getContentPane().add(jPanel7, BorderLayout.NORTH);
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Tiempos de espera"));
-        jPanel6.setLayout(new java.awt.BorderLayout());
+        jPanel6.setBorder(BorderFactory.createTitledBorder("Tiempos de espera"));
+        jPanel6.setLayout(new BorderLayout());
 
-        jScrollPane3.setMinimumSize(new java.awt.Dimension(200, 23));
+        jScrollPane3.setMinimumSize(new Dimension(200, 23));
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        jTable3.setModel(new DefaultTableModel(
             new Object [][]
             {
                 {null, null},
@@ -94,25 +112,23 @@ public class VistaGrafica extends javax.swing.JFrame
         ));
         jScrollPane3.setViewportView(jTable3);
 
-        jPanel6.add(jScrollPane3, java.awt.BorderLayout.CENTER);
+        jPanel6.add(jScrollPane3, BorderLayout.CENTER);
 
         jSplitPane1.setLeftComponent(jPanel6);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Representación gráfica", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP));
-        jPanel4.setMinimumSize(new java.awt.Dimension(400, 123));
-        jPanel4.setPreferredSize(new java.awt.Dimension(400, 498));
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
+        jPanel4.setBorder(BorderFactory.createTitledBorder(null, "Representación gráfica", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.TOP));
+        jPanel4.setMinimumSize(new Dimension(400, 123));
+        jPanel4.setPreferredSize(new Dimension(400, 498));
+        jPanel4.setLayout(new BoxLayout(jPanel4, BoxLayout.Y_AXIS));
 
-        jPanel5.setBackground(new java.awt.Color(255, 204, 204));
+        jPanel5.setBackground(new Color(255, 204, 204));
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        GroupLayout jPanel5Layout = new GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 499, Short.MAX_VALUE)
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 522, Short.MAX_VALUE)
         );
 
@@ -120,16 +136,16 @@ public class VistaGrafica extends javax.swing.JFrame
 
         jSplitPane1.setRightComponent(jPanel4);
 
-        getContentPane().add(jSplitPane1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jSplitPane1, BorderLayout.CENTER);
 
-        jPanel2.setMinimumSize(new java.awt.Dimension(270, 92));
-        jPanel2.setPreferredSize(new java.awt.Dimension(270, 850));
-        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
+        jPanel2.setMinimumSize(new Dimension(270, 92));
+        jPanel2.setPreferredSize(new Dimension(270, 850));
+        jPanel2.setLayout(new BoxLayout(jPanel2, BoxLayout.Y_AXIS));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos recuperados"));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel1.setBorder(BorderFactory.createTitledBorder("Datos recuperados"));
+        jPanel1.setLayout(new BorderLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable1.setModel(new DefaultTableModel(
             new Object [][]
             {
                 {null, null, null, null},
@@ -150,14 +166,14 @@ public class VistaGrafica extends javax.swing.JFrame
             jTable1.getColumnModel().getColumn(0).setMaxWidth(30);
         }
 
-        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel1.add(jScrollPane1, BorderLayout.CENTER);
 
         jPanel2.add(jPanel1);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Procesos finalizados"));
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        jPanel3.setBorder(BorderFactory.createTitledBorder("Procesos finalizados"));
+        jPanel3.setLayout(new BorderLayout());
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTable2.setModel(new DefaultTableModel(
             new Object [][]
             {
                 {null, null, null, null},
@@ -178,11 +194,11 @@ public class VistaGrafica extends javax.swing.JFrame
             jTable2.getColumnModel().getColumn(0).setMaxWidth(30);
         }
 
-        jPanel3.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        jPanel3.add(jScrollPane2, BorderLayout.CENTER);
 
         jPanel2.add(jPanel3);
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.EAST);
+        getContentPane().add(jPanel2, BorderLayout.EAST);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -213,7 +229,7 @@ public class VistaGrafica extends javax.swing.JFrame
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() ->
+        EventQueue.invokeLater(() ->
         {
             VistaGrafica vista = new VistaGrafica();
             vista.setVisible(true);
@@ -222,26 +238,26 @@ public class VistaGrafica extends javax.swing.JFrame
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
+    private Box.Filler filler1;
+    private Box.Filler filler2;
+    private JButton jButton3;
+    private JButton jButton4;
+    private JLabel jLabel1;
+    private JPanel jPanel1;
+    private JPanel jPanel2;
+    private JPanel jPanel3;
+    private JPanel jPanel4;
+    private JPanel jPanel5;
+    private JPanel jPanel6;
+    private JPanel jPanel7;
+    private JPanel jPanel8;
+    private JPanel jPanel9;
+    private JScrollPane jScrollPane1;
+    private JScrollPane jScrollPane2;
+    private JScrollPane jScrollPane3;
+    private JSplitPane jSplitPane1;
+    private JTable jTable1;
+    private JTable jTable2;
+    private JTable jTable3;
     // End of variables declaration//GEN-END:variables
 }
